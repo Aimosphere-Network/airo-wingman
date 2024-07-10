@@ -56,6 +56,7 @@ dependencies = [
  "envmnt",
  "once_cell",
  "subxt",
+ "thiserror",
  "tokio",
  "tokio-util",
  "tracing",
