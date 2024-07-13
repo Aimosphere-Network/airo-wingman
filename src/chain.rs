@@ -11,7 +11,10 @@ use thiserror::Error;
 use tokio::sync::broadcast::Sender;
 use tokio_util::sync::CancellationToken;
 
-use crate::Result;
+use crate::{
+    data::{ModelId, OrderId},
+    Result,
+};
 
 #[subxt::subxt(runtime_metadata_path = "metadata.scale")]
 pub mod airo {}
@@ -31,8 +34,6 @@ impl Config for AiroConfig {
 
 type AiroClient = OnlineClient<AiroConfig>;
 type Block = subxt::blocks::Block<AiroConfig, AiroClient>;
-type OrderId = u32;
-type ModelId = String;
 
 #[derive(Clone, Debug)]
 pub enum ChainEvent {
@@ -60,7 +61,7 @@ impl ChainClient {
         // TODO. It might make sense to reconnect automatically
         // https://github.com/paritytech/subxt/blob/master/subxt/examples/setup_reconnecting_rpc_client.rs
         let client = AiroClient::from_insecure_url(url).await?;
-        tracing::info!("🚀 Connected to airo node at {}", url);
+        tracing::info!("🚀 Connected to airo node at {url}");
         Ok(Self { client })
     }
 

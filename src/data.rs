@@ -3,8 +3,9 @@ use dashmap::DashMap;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-pub type ModelId = String;
 pub type Balance = u128;
+pub type ModelId = String;
+pub type OrderId = u32;
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct Model {
@@ -16,7 +17,7 @@ pub struct Model {
 #[derive(Serialize, Deserialize, ToSchema, Clone, Copy)]
 pub struct ModelDetails {
     #[schema(value_type = u128)]
-    price: Balance,
+    pub bid: Balance,
 }
 
 #[async_trait]
