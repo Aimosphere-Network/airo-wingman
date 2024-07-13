@@ -8,7 +8,7 @@ use subxt::{
     Config, OnlineClient,
 };
 use thiserror::Error;
-use tokio::sync::broadcast;
+use tokio::sync::broadcast::Sender;
 use tokio_util::sync::CancellationToken;
 
 use crate::Result;
@@ -60,15 +60,11 @@ impl ChainClient {
         // TODO. It might make sense to reconnect automatically
         // https://github.com/paritytech/subxt/blob/master/subxt/examples/setup_reconnecting_rpc_client.rs
         let client = AiroClient::from_insecure_url(url).await?;
-        tracing::info!("Connected to airo node at {}", url);
+        tracing::info!("🚀 Connected to airo node at {}", url);
         Ok(Self { client })
     }
 
-    pub async fn listen(
-        &self,
-        token: CancellationToken,
-        sender: broadcast::Sender<ChainEvent>,
-    ) -> Result<()> {
+    pub async fn listen(&self, token: CancellationToken, sender: Sender<ChainEvent>) -> Result<()> {
         let mut blocks_sub = self.client.blocks().subscribe_finalized().await?;
         while let Some(block) = blocks_sub.next().await {
             tokio::select! {
@@ -81,11 +77,7 @@ impl ChainClient {
         Err(Error::NextBlock.into())
     }
 
-    async fn process_block(
-        &self,
-        block: Block,
-        sender: &broadcast::Sender<ChainEvent>,
-    ) -> Result<()> {
+    async fn process_block(&self, block: Block, sender: &Sender<ChainEvent>) -> Result<()> {
         let events = block.events().await?;
         for event in events.iter() {
             let event = event?;
