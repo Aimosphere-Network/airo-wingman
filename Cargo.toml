@@ -18,6 +18,7 @@ opt-level = 3        # Optimize for speed regardless of binary size or compile t
 
 [dependencies]
 subxt = "0.37"
+subxt-signer = "0.37"
 
 axum = { version = "0.7", features = ["macros"] }
 utoipa = { version = "5.0.0-alpha.0", features = ["axum_extras"] }

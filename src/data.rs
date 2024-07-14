@@ -17,7 +17,7 @@ pub struct Model {
 #[derive(Serialize, Deserialize, ToSchema, Clone, Copy)]
 pub struct ModelDetails {
     #[schema(value_type = u128)]
-    pub bid: Balance,
+    pub price_per_request: Balance,
 }
 
 #[async_trait]

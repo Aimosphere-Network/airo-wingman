@@ -4,7 +4,10 @@ use thiserror::Error;
 use tokio::sync::broadcast::{error::RecvError, Receiver};
 use tokio_util::sync::CancellationToken;
 
-use crate::{chain::ChainEvent, data::ModelRepo};
+use crate::{
+    chain::{ChainEvent, TxSubmitter},
+    data::ModelRepo,
+};
 
 #[derive(Error, Debug)]
 pub enum Error {
@@ -15,12 +18,17 @@ pub enum Error {
 pub struct BidEngine {
     chain_rx: Receiver<ChainEvent>,
     model_repo: Arc<dyn ModelRepo>,
+    tx_submitter: Arc<dyn TxSubmitter>,
 }
 
 impl BidEngine {
-    pub fn new(chain_rx: Receiver<ChainEvent>, model_repo: Arc<dyn ModelRepo>) -> Self {
+    pub fn new(
+        chain_rx: Receiver<ChainEvent>,
+        model_repo: Arc<dyn ModelRepo>,
+        tx_submitter: Arc<dyn TxSubmitter>,
+    ) -> Self {
         tracing::info!("🚀 Starting bid engine");
-        Self { chain_rx, model_repo }
+        Self { chain_rx, model_repo, tx_submitter }
     }
 
     pub async fn run(&mut self, token: CancellationToken) -> crate::Result<()> {
@@ -49,11 +57,12 @@ impl BidEngine {
                 if let Some(model) = self.model_repo.get(model_id).await {
                     tracing::info!(
                         "💸 Bidding {} on order {} for model {}",
-                        model.details.bid,
+                        model.details.price_per_request,
                         order_id,
                         model.id
                     );
-                    // TODO. Post transaction.
+
+                    self.tx_submitter.create_bid(order_id, model.details.price_per_request).await?;
                 }
             },
         }

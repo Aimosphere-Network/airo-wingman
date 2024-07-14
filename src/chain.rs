@@ -1,3 +1,6 @@
+use std::str::FromStr;
+
+use async_trait::async_trait;
 use subxt::{
     config::{
         substrate::{BlakeTwo256, SubstrateHeader},
@@ -7,12 +10,13 @@ use subxt::{
     utils::{AccountId32, MultiAddress, MultiSignature, H256},
     Config, OnlineClient,
 };
+use subxt_signer::{sr25519::Keypair, SecretUri};
 use thiserror::Error;
 use tokio::sync::broadcast::Sender;
 use tokio_util::sync::CancellationToken;
 
 use crate::{
-    data::{ModelId, OrderId},
+    data::{Balance, ModelId, OrderId},
     Result,
 };
 
@@ -53,50 +57,75 @@ pub enum Error {
 }
 
 pub struct ChainClient {
-    pub client: AiroClient,
+    client: AiroClient,
+    keypair: Keypair,
 }
 
 impl ChainClient {
-    pub async fn new(url: &str) -> Result<Self> {
+    pub async fn new(url: &str, secret_uri: &str) -> Result<Self> {
+        let uri = SecretUri::from_str(secret_uri)?;
+        let keypair = Keypair::from_uri(&uri)?;
+
         // TODO. It might make sense to reconnect automatically
         // https://github.com/paritytech/subxt/blob/master/subxt/examples/setup_reconnecting_rpc_client.rs
         let client = AiroClient::from_insecure_url(url).await?;
-        tracing::info!("🚀 Connected to airo node at {url}");
-        Ok(Self { client })
-    }
 
-    pub async fn listen(&self, token: CancellationToken, sender: Sender<ChainEvent>) -> Result<()> {
+        tracing::info!("🚀 Connected to airo node at {url}");
+        Ok(Self { client, keypair })
+    }
+}
+
+#[async_trait]
+pub trait ChainListener: Send + Sync {
+    async fn listen(&self, token: CancellationToken, sender: Sender<ChainEvent>) -> Result<()>;
+}
+
+#[async_trait]
+impl ChainListener for ChainClient {
+    async fn listen(&self, token: CancellationToken, sender: Sender<ChainEvent>) -> Result<()> {
         let mut blocks_sub = self.client.blocks().subscribe_finalized().await?;
         while let Some(block) = blocks_sub.next().await {
             tokio::select! {
                 _ = token.cancelled() => return Ok(()),
-                result = self.process_block(block?, &sender) => result?,
+                result = process_block(block?, &sender) => result?,
             }
         }
 
         tracing::error!("Failed to get the next block");
         Err(Error::NextBlock.into())
     }
+}
 
-    async fn process_block(&self, block: Block, sender: &Sender<ChainEvent>) -> Result<()> {
-        let events = block.events().await?;
-        for event in events.iter() {
-            let event = event?;
-            let event_meta = event.event_metadata();
-            let pallet_name = event_meta.pallet.name();
-            let event_name = event_meta.variant.name.as_str();
-
-            if airo::airo_market::events::OrderCreated::is_event(pallet_name, event_name) {
-                if let Some(order_created) =
-                    event.as_event::<airo::airo_market::events::OrderCreated>()?
-                {
-                    let order_id = order_created.order_id;
-                    let model_id = String::from_utf8_lossy(&order_created.model_id.0).into_owned();
-                    sender.send(ChainEvent::OrderCreated { order_id, model_id })?;
-                }
+async fn process_block(block: Block, sender: &Sender<ChainEvent>) -> Result<()> {
+    let events = block.events().await?;
+    for event in events.iter() {
+        let event = event?;
+        let event_meta = event.event_metadata();
+        let pallet_name = event_meta.pallet.name();
+        let event_name = event_meta.variant.name.as_str();
+        if airo::airo_market::events::OrderCreated::is_event(pallet_name, event_name) {
+            if let Some(order_created) =
+                event.as_event::<airo::airo_market::events::OrderCreated>()?
+            {
+                let order_id = order_created.order_id;
+                let model_id = String::from_utf8_lossy(&order_created.model_id.0).into_owned();
+                sender.send(ChainEvent::OrderCreated { order_id, model_id })?;
             }
         }
+    }
+    Ok(())
+}
 
+#[async_trait]
+pub trait TxSubmitter: Send + Sync {
+    async fn create_bid(&self, order_id: OrderId, price_per_request: Balance) -> Result<()>;
+}
+
+#[async_trait]
+impl TxSubmitter for ChainClient {
+    async fn create_bid(&self, order_id: OrderId, price_per_request: Balance) -> Result<()> {
+        let tx = airo::tx().airo_market().bid_create(order_id, price_per_request);
+        let _hash = self.client.tx().sign_and_submit_default(&tx, &self.keypair).await?;
         Ok(())
     }
 }

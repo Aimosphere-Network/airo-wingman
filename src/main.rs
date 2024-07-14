@@ -2,8 +2,7 @@
 
 #![warn(missing_docs)]
 
-use core::future::Future;
-use std::{error::Error, sync::Arc};
+use std::{error::Error, future::Future, sync::Arc};
 
 use tokio::{
     signal,
@@ -14,7 +13,7 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 use crate::{
     bid_engine::BidEngine,
-    chain::{ChainClient, ChainEvent},
+    chain::{ChainClient, ChainEvent, ChainListener, TxSubmitter},
     config::Config,
     data::{ModelRepo, ModelRepoFac},
     http::HttpServer,
@@ -27,6 +26,31 @@ mod data;
 mod http;
 
 type Result<T> = std::result::Result<T, Box<dyn Error + Send + Sync>>;
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    let Config { http_port, airo_node, airo_suri } = Config::new();
+    tracing_subscriber::registry().with(tracing_subscriber::fmt::layer()).init();
+
+    let tracker = TaskTracker::new();
+    let token = CancellationToken::new();
+    tracker.spawn_shutdown_listener(token.clone());
+
+    let chain_client = ChainClient::new(&airo_node, &airo_suri).await.map_err(|e| {
+        tracing::error!("🚫 Failed to connect to airo node: {e}");
+        e
+    })?;
+    let chain_client = Arc::new(chain_client);
+    let chain_rx = tracker.spawn_chain_listener(token.clone(), chain_client.clone());
+
+    let model_repo = Arc::new(ModelRepoFac::in_memory());
+    tracker.spawn_http_server(token.clone(), http_port, model_repo.clone());
+    tracker.spawn_bid_engine(token, chain_rx, model_repo, chain_client);
+
+    tracker.close();
+    tracker.wait().await;
+    Ok(())
+}
 
 /// Spawns a critical task. If the task fails, the given token is cancelled.
 async fn critical_task<F>(name: &str, token: CancellationToken, task: F) -> Result<()>
@@ -44,7 +68,7 @@ trait TaskTrackerEx {
     fn spawn_chain_listener(
         &self,
         token: CancellationToken,
-        chain_client: ChainClient,
+        chain_listener: Arc<dyn ChainListener>,
     ) -> Receiver<ChainEvent>;
 
     fn spawn_http_server(
@@ -59,6 +83,7 @@ trait TaskTrackerEx {
         token: CancellationToken,
         chain_rx: Receiver<ChainEvent>,
         model_repo: Arc<dyn ModelRepo>,
+        tx_sender: Arc<dyn TxSubmitter>,
     );
 
     fn spawn_shutdown_listener(&self, token: CancellationToken);
@@ -68,12 +93,12 @@ impl TaskTrackerEx for TaskTracker {
     fn spawn_chain_listener(
         &self,
         token: CancellationToken,
-        chain_client: ChainClient,
+        chain_listener: Arc<dyn ChainListener>,
     ) -> Receiver<ChainEvent> {
         let (chain_tx, chain_rx) = channel(128);
 
         self.spawn(critical_task("chain_listener", token.clone(), async move {
-            chain_client.listen(token, chain_tx).await
+            chain_listener.listen(token, chain_tx).await
         }));
 
         chain_rx
@@ -98,8 +123,9 @@ impl TaskTrackerEx for TaskTracker {
         token: CancellationToken,
         chain_rx: Receiver<ChainEvent>,
         model_repo: Arc<dyn ModelRepo>,
+        tx_sender: Arc<dyn TxSubmitter>,
     ) {
-        let mut bid_engine = BidEngine::new(chain_rx, model_repo);
+        let mut bid_engine = BidEngine::new(chain_rx, model_repo, tx_sender);
         self.spawn(critical_task("bid_engine", token.clone(), async move {
             bid_engine.run(token).await
         }));
@@ -137,28 +163,4 @@ impl TaskTrackerEx for TaskTracker {
 
         self.spawn(shutdown_signal(token));
     }
-}
-
-#[tokio::main]
-async fn main() -> Result<()> {
-    let config = Config::new();
-    tracing_subscriber::registry().with(tracing_subscriber::fmt::layer()).init();
-
-    let tracker = TaskTracker::new();
-    let token = CancellationToken::new();
-    tracker.spawn_shutdown_listener(token.clone());
-
-    let chain_client = ChainClient::new(&config.airo_node).await.map_err(|e| {
-        tracing::error!("🚫 Failed to connect to airo node: {e}");
-        e
-    })?;
-    let chain_rx = tracker.spawn_chain_listener(token.clone(), chain_client);
-
-    let model_repo = Arc::new(ModelRepoFac::in_memory());
-    tracker.spawn_http_server(token.clone(), config.http_port, model_repo.clone());
-    tracker.spawn_bid_engine(token, chain_rx, model_repo);
-
-    tracker.close();
-    tracker.wait().await;
-    Ok(())
 }
