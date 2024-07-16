@@ -30,7 +30,10 @@ type Result<T> = std::result::Result<T, Box<dyn Error + Send + Sync>>;
 #[tokio::main]
 async fn main() -> Result<()> {
     let Config { http_port, airo_node, airo_suri } = Config::new();
-    tracing_subscriber::registry().with(tracing_subscriber::fmt::layer()).init();
+    tracing_subscriber::registry()
+        .with(tracing_subscriber::fmt::layer())
+        .with(tracing_subscriber::EnvFilter::from_default_env())
+        .init();
 
     let tracker = TaskTracker::new();
     let token = CancellationToken::new();

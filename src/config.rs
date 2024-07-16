@@ -11,6 +11,7 @@ pub struct Config {
     pub airo_node: String,
     /// The secret uri of an Infrastructure Provider used for automation. Is specified in the
     /// `AIRO_SURI` environment variable. The variable is required.
+    // TODO. Improve security by using a secret store.
     pub airo_suri: String,
 }
 
