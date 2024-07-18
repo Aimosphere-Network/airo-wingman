@@ -65,6 +65,7 @@ impl BidEngine {
                     self.tx_submitter.create_bid(order_id, model.details.price_per_request).await?;
                 }
             },
+            _ => {},
         }
 
         Ok(())
