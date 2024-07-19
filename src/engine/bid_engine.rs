@@ -1,19 +1,13 @@
 use std::sync::Arc;
 
-use thiserror::Error;
+use async_trait::async_trait;
 use tokio::sync::broadcast::{error::RecvError, Receiver};
-use tokio_util::sync::CancellationToken;
 
 use crate::{
     chain::{ChainEvent, TxSubmitter},
     data::ModelRepo,
+    engine::Engine,
 };
-
-#[derive(Error, Debug)]
-pub enum Error {
-    #[error("Chain events receiver closed")]
-    ReceiverClosed,
-}
 
 pub struct BidEngine {
     chain_rx: Receiver<ChainEvent>,
@@ -30,28 +24,11 @@ impl BidEngine {
         tracing::info!("🚀 Starting bid engine");
         Self { chain_rx, model_repo, tx_submitter }
     }
+}
 
-    pub async fn run(&mut self, token: CancellationToken) -> crate::Result<()> {
-        loop {
-            tokio::select! {
-                _ = token.cancelled() => break,
-                result = self.chain_rx.recv() => {
-                    match result {
-                        Ok(event) => self.process_chain_event(event).await?,
-                        Err(RecvError::Lagged(lost)) => {
-                            tracing::warn!("⚠️ Chain receiver lagged behind by {lost} events");
-                        },
-                        Err(RecvError::Closed) => {
-                            tracing::error!("Chain receiver closed");
-                            return Err(Error::ReceiverClosed.into());
-                        }}
-                }
-            }
-        }
-        Ok(())
-    }
-
-    async fn process_chain_event(&self, event: ChainEvent) -> crate::Result<()> {
+#[async_trait]
+impl Engine for BidEngine {
+    async fn process_chain_event(&mut self, event: ChainEvent) -> crate::Result<()> {
         match event {
             ChainEvent::OrderCreated { order_id, model_id } => {
                 if let Some(model) = self.model_repo.get(model_id).await {
@@ -69,5 +46,9 @@ impl BidEngine {
         }
 
         Ok(())
+    }
+
+    async fn try_recv(&mut self) -> Result<ChainEvent, RecvError> {
+        self.chain_rx.recv().await
     }
 }

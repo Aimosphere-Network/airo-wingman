@@ -2,30 +2,32 @@
 
 #![warn(missing_docs)]
 
+pub use std::result::Result as stdResult;
 use std::{error::Error, future::Future, sync::Arc};
 
 use tokio::{
     signal,
-    sync::broadcast::{channel, Receiver},
+    sync::broadcast::{channel, Receiver, Sender},
 };
 use tokio_util::{sync::CancellationToken, task::TaskTracker};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 use crate::{
-    bid_engine::BidEngine,
     chain::{ChainClient, ChainEvent, ChainListener, TxSubmitter},
     config::Config,
     data::{ModelRepo, ModelRepoFac},
+    engine::{BidEngine, Engine, ExecutionEngine},
     http::HttpServer,
 };
 
-mod bid_engine;
 mod chain;
 mod config;
 mod data;
+mod engine;
+
 mod http;
 
-type Result<T> = std::result::Result<T, Box<dyn Error + Send + Sync>>;
+type Result<T> = stdResult<T, Box<dyn Error + Send + Sync>>;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -44,11 +46,14 @@ async fn main() -> Result<()> {
         e
     })?;
     let chain_client = Arc::new(chain_client);
-    let chain_rx = tracker.spawn_chain_listener(token.clone(), chain_client.clone());
+    let (chain_tx, chain_rx_bid) = channel(128);
+    let chain_rx_exec = chain_tx.subscribe();
+    tracker.spawn_chain_listener(token.clone(), chain_client.clone(), chain_tx);
+    tracker.spawn_execution_engine(token.clone(), chain_rx_exec);
 
     let model_repo = Arc::new(ModelRepoFac::in_memory());
     tracker.spawn_http_server(token.clone(), http_port, model_repo.clone());
-    tracker.spawn_bid_engine(token, chain_rx, model_repo, chain_client);
+    tracker.spawn_bid_engine(token, chain_rx_bid, model_repo, chain_client);
 
     tracker.close();
     tracker.wait().await;
@@ -72,7 +77,8 @@ trait TaskTrackerEx {
         &self,
         token: CancellationToken,
         chain_listener: Arc<dyn ChainListener>,
-    ) -> Receiver<ChainEvent>;
+        chain_tx: Sender<ChainEvent>,
+    );
 
     fn spawn_http_server(
         &self,
@@ -89,6 +95,8 @@ trait TaskTrackerEx {
         tx_sender: Arc<dyn TxSubmitter>,
     );
 
+    fn spawn_execution_engine(&self, token: CancellationToken, chain_rx: Receiver<ChainEvent>);
+
     fn spawn_shutdown_listener(&self, token: CancellationToken);
 }
 
@@ -97,14 +105,11 @@ impl TaskTrackerEx for TaskTracker {
         &self,
         token: CancellationToken,
         chain_listener: Arc<dyn ChainListener>,
-    ) -> Receiver<ChainEvent> {
-        let (chain_tx, chain_rx) = channel(128);
-
+        chain_tx: Sender<ChainEvent>,
+    ) {
         self.spawn(critical_task("chain_listener", token.clone(), async move {
             chain_listener.listen(token, chain_tx).await
         }));
-
-        chain_rx
     }
 
     fn spawn_http_server(
@@ -131,6 +136,13 @@ impl TaskTrackerEx for TaskTracker {
         let mut bid_engine = BidEngine::new(chain_rx, model_repo, tx_sender);
         self.spawn(critical_task("bid_engine", token.clone(), async move {
             bid_engine.run(token).await
+        }));
+    }
+
+    fn spawn_execution_engine(&self, token: CancellationToken, chain_rx: Receiver<ChainEvent>) {
+        let mut execution_engine = ExecutionEngine::new(chain_rx);
+        self.spawn(critical_task("execution_engine", token.clone(), async move {
+            execution_engine.run(token).await
         }));
     }
 

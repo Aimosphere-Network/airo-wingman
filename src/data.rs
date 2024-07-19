@@ -6,6 +6,7 @@ use utoipa::ToSchema;
 pub type Balance = u128;
 pub type ModelId = String;
 pub type OrderId = u32;
+pub type AgreementId = u32;
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct Model {
