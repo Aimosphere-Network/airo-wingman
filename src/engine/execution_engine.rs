@@ -24,6 +24,10 @@ impl ExecutionEngine {
 impl Engine for ExecutionEngine {
     async fn process_chain_event(&mut self, event: ChainEvent) -> crate::Result<()> {
         match event {
+            ChainEvent::BidAccepted { order_id } => {
+                tracing::info!("🤝 Bid for order {order_id} accepted");
+                self.agreements.insert(order_id);
+            },
             _ => {},
         }
 
