@@ -2,8 +2,7 @@
 
 #![warn(missing_docs)]
 
-pub use std::result::Result as stdResult;
-use std::{error::Error, future::Future, sync::Arc};
+use std::{future::Future, sync::Arc};
 
 use tokio::{
     signal,
@@ -18,16 +17,15 @@ use crate::{
     data::{ModelRepo, ModelRepoFac},
     engine::{BidEngine, Engine, ExecutionEngine},
     http::HttpServer,
+    types::Result,
 };
 
 mod chain;
 mod config;
 mod data;
 mod engine;
-
 mod http;
-
-type Result<T> = stdResult<T, Box<dyn Error + Send + Sync>>;
+mod types;
 
 #[tokio::main]
 async fn main() -> Result<()> {

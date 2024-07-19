@@ -1,25 +1,7 @@
 use async_trait::async_trait;
 use dashmap::DashMap;
-use serde::{Deserialize, Serialize};
-use utoipa::ToSchema;
 
-pub type Balance = u128;
-pub type ModelId = String;
-pub type OrderId = u32;
-pub type AgreementId = u32;
-
-#[derive(Serialize, Deserialize, ToSchema)]
-pub struct Model {
-    #[schema(value_type = String)]
-    pub id: ModelId,
-    pub details: ModelDetails,
-}
-
-#[derive(Serialize, Deserialize, ToSchema, Clone, Copy)]
-pub struct ModelDetails {
-    #[schema(value_type = u128)]
-    pub price_per_request: Balance,
-}
+use crate::types::{Model, ModelDetails, ModelId};
 
 #[async_trait]
 pub trait ModelRepo: Send + Sync {

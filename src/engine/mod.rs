@@ -6,7 +6,10 @@ use tokio_util::sync::CancellationToken;
 pub use bid_engine::BidEngine;
 pub use execution_engine::ExecutionEngine;
 
-use crate::{chain::ChainEvent, stdResult, Result};
+use crate::{
+    chain::ChainEvent,
+    types::{Result, stdResult},
+};
 
 mod bid_engine;
 mod execution_engine;

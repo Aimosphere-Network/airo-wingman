@@ -14,7 +14,10 @@ use tokio_util::sync::CancellationToken;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
-use crate::data::{Model, ModelDetails, ModelId, ModelRepo};
+use crate::{
+    data::ModelRepo,
+    types::{Model, ModelDetails, ModelId},
+};
 
 #[derive(OpenApi)]
 #[openapi(

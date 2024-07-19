@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use async_trait::async_trait;
 use tokio::sync::broadcast::{error::RecvError, Receiver};
 
-use crate::{chain::ChainEvent, data::AgreementId, engine::Engine};
+use crate::{chain::ChainEvent, engine::Engine, types::AgreementId};
 
 pub struct ExecutionEngine {
     chain_rx: Receiver<ChainEvent>,

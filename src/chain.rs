@@ -15,10 +15,7 @@ use thiserror::Error;
 use tokio::sync::broadcast::Sender;
 use tokio_util::sync::CancellationToken;
 
-use crate::{
-    data::{Balance, ModelId, OrderId},
-    Result,
-};
+use crate::types::{AgreementId, Balance, ContentId, ModelId, OrderId, Result};
 
 type AccountId = AccountId32;
 
@@ -54,6 +51,15 @@ pub enum ChainEvent {
     BidAccepted {
         /// The order ID.
         order_id: OrderId,
+    },
+    /// A request has been created.
+    RequestCreated {
+        /// The agreement ID.
+        agreement_id: AgreementId,
+        /// The request index.
+        request_index: u32,
+        /// The content ID.
+        content_id: ContentId,
     },
 }
 

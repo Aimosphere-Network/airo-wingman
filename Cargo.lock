@@ -57,6 +57,7 @@ dependencies = [
  "dashmap",
  "envmnt",
  "once_cell",
+ "primitive-types",
  "serde",
  "serde_json",
  "subxt",

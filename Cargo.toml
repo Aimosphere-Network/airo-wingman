@@ -17,6 +17,7 @@ lto = true           # Enables Link Time Optimization, enabling more aggressive 
 opt-level = 3        # Optimize for speed regardless of binary size or compile time
 
 [dependencies]
+primitive-types = "0.12"
 subxt = "0.37"
 subxt-signer = "0.37"
 
