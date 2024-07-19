@@ -90,7 +90,10 @@ impl ChainClient {
     }
 
     async fn process_block(&self, block: Block, sender: &Sender<ChainEvent>) -> Result<()> {
-        use airo::airo_market::events::{BidAccepted, OrderCreated};
+        use airo::{
+            airo_execution::events::RequestCreated,
+            airo_market::events::{BidAccepted, OrderCreated},
+        };
 
         let events = block.events().await?;
         for event in events.iter() {
@@ -115,6 +118,18 @@ impl ChainClient {
                         }
                         let order_id = event.order_id;
                         sender.send(ChainEvent::BidAccepted { order_id })?;
+                    }
+                },
+                (RequestCreated::PALLET, RequestCreated::EVENT) => {
+                    if let Some(event) = event.as_event::<RequestCreated>()? {
+                        let agreement_id = event.agreement_id;
+                        let request_index = event.request_index;
+                        let content_id = event.content_id;
+                        sender.send(ChainEvent::RequestCreated {
+                            agreement_id,
+                            request_index,
+                            content_id,
+                        })?;
                     }
                 },
                 _ => {},
