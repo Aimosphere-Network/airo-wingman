@@ -16,6 +16,9 @@ jobs:
       - name: Setup build dependencies
         uses: "./.github/templates/setup-build"
 
+      - name: Setup Cog
+        uses: replicate/setup-cog@v2
+
       - name: Setup rust toolchain
         run: rustup show
 
