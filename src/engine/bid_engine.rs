@@ -7,6 +7,7 @@ use crate::{
     chain::{ChainEvent, TxSubmitter},
     data::ModelRepo,
     engine::Engine,
+    types::{stdResult, Result},
 };
 
 pub struct BidEngine {
@@ -28,27 +29,24 @@ impl BidEngine {
 
 #[async_trait]
 impl Engine for BidEngine {
-    async fn process_chain_event(&mut self, event: ChainEvent) -> crate::Result<()> {
-        match event {
-            ChainEvent::OrderCreated { order_id, model_id } => {
-                if let Some(model) = self.model_repo.get(model_id).await {
-                    tracing::info!(
-                        "💸 Bidding {} on order {} for model {}",
-                        model.details.price_per_request,
-                        order_id,
-                        model.id
-                    );
+    async fn process_chain_event(&mut self, event: ChainEvent) -> Result<()> {
+        if let ChainEvent::OrderCreated { order_id, model_id } = event {
+            if let Some(model) = self.model_repo.get(model_id).await {
+                tracing::info!(
+                    "💸 Bidding {} on order {} for model {}",
+                    model.details.price_per_request,
+                    order_id,
+                    model.id
+                );
 
-                    self.tx_submitter.create_bid(order_id, model.details.price_per_request).await?;
-                }
-            },
-            _ => {},
+                self.tx_submitter.create_bid(order_id, model.details.price_per_request).await?;
+            }
         }
 
         Ok(())
     }
 
-    async fn try_recv(&mut self) -> Result<ChainEvent, RecvError> {
+    async fn try_recv(&mut self) -> stdResult<ChainEvent, RecvError> {
         self.chain_rx.recv().await
     }
 }

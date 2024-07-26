@@ -8,7 +8,7 @@ pub use execution_engine::ExecutionEngine;
 
 use crate::{
     chain::ChainEvent,
-    types::{Result, stdResult},
+    types::{stdResult, Result},
 };
 
 mod bid_engine;
