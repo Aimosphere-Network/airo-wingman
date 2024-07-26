@@ -2,11 +2,13 @@ use std::str::FromStr;
 
 use async_trait::async_trait;
 use subxt::{
+    backend::{legacy::rpc_methods::Bytes, rpc::RpcClient},
     config::{
         substrate::{BlakeTwo256, SubstrateHeader},
         SubstrateExtrinsicParams,
     },
     events::StaticEvent,
+    rpc_params,
     utils::{AccountId32, MultiAddress, MultiSignature, H256},
     Config, OnlineClient,
 };
@@ -63,13 +65,14 @@ pub enum ChainEvent {
     },
 }
 
-#[derive(Error, Debug)]
+#[derive(Debug, Error)]
 pub enum Error {
     #[error("Failed to get the next block")]
     NextBlock,
 }
 
 pub struct ChainClient {
+    rpc: RpcClient,
     client: AiroClient,
     signer: Keypair,
     provider: AccountId,
@@ -83,10 +86,11 @@ impl ChainClient {
 
         // TODO. It might make sense to reconnect automatically
         // https://github.com/paritytech/subxt/blob/master/subxt/examples/setup_reconnecting_rpc_client.rs
-        let client = AiroClient::from_insecure_url(url).await?;
+        let rpc = RpcClient::from_insecure_url(url).await?;
+        let client = AiroClient::from_rpc_client(rpc.clone()).await?;
 
         tracing::info!("🚀 Connected to airo node at {url}");
-        Ok(Self { client, signer, provider })
+        Ok(Self { rpc, client, signer, provider })
     }
 
     async fn process_block(&self, block: Block, sender: &Sender<ChainEvent>) -> Result<()> {
@@ -171,5 +175,25 @@ impl TxSubmitter for ChainClient {
         let tx = airo::tx().airo_market().bid_create(order_id, price_per_request);
         let _hash = self.client.tx().sign_and_submit_default(&tx, &self.signer).await?;
         Ok(())
+    }
+}
+
+#[async_trait]
+pub trait DataExchange: Send + Sync {
+    async fn upload(&self, content_id: ContentId, data: Vec<u8>) -> Result<()>;
+    async fn download(&self, key: ContentId) -> Result<Option<Vec<u8>>>;
+}
+
+#[async_trait]
+impl DataExchange for ChainClient {
+    async fn upload(&self, content_id: ContentId, data: Vec<u8>) -> Result<()> {
+        let data = Bytes::from(data);
+        self.rpc.request("exchange_upload", rpc_params![content_id, data]).await?;
+        Ok(())
+    }
+
+    async fn download(&self, key: ContentId) -> Result<Option<Vec<u8>>> {
+        let data = self.rpc.request::<Option<Bytes>>("exchange_download", rpc_params![key]).await?;
+        Ok(data.map(|data| data.0))
     }
 }

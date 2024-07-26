@@ -20,13 +20,13 @@ use crate::{
     types::Result,
 };
 
-mod chain;
+pub mod chain;
 pub mod cog;
-mod config;
-mod data;
-mod engine;
-mod http;
-mod types;
+pub mod config;
+pub mod data;
+pub mod engine;
+pub mod http;
+pub mod types;
 
 pub async fn start() -> Result<()> {
     let Config { http_port, airo_node, airo_suri } = Config::new();
