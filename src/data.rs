@@ -4,7 +4,7 @@ use dashmap::DashMap;
 use crate::types::{Model, ModelDetails, ModelId};
 
 #[async_trait]
-pub trait ModelRepo: Send + Sync {
+pub trait ModelRepo {
     async fn list(&self) -> Vec<Model>;
     async fn contains(&self, id: &ModelId) -> bool;
     async fn get(&self, id: ModelId) -> Option<Model>;
@@ -30,7 +30,7 @@ impl ModelRepo for InMemoryModelRepo {
     async fn list(&self) -> Vec<Model> {
         self.db
             .iter()
-            .map(|kv| Model { id: kv.key().clone(), details: *kv.value() })
+            .map(|kv| Model { id: kv.key().clone(), details: kv.value().clone() })
             .collect()
     }
 
@@ -39,7 +39,7 @@ impl ModelRepo for InMemoryModelRepo {
     }
 
     async fn get(&self, id: ModelId) -> Option<Model> {
-        self.db.get(&id).map(|kv| Model { id, details: *kv.value() })
+        self.db.get(&id).map(|kv| Model { id, details: kv.value().clone() })
     }
 
     async fn save(&self, model: Model) {

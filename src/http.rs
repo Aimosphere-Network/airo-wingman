@@ -28,11 +28,11 @@ use crate::{
 )]
 pub struct HttpServer {
     port: u16,
-    model_repo: Arc<dyn ModelRepo>,
+    model_repo: Arc<dyn ModelRepo + Send + Sync>,
 }
 
 impl HttpServer {
-    pub fn new(port: u16, model_repo: Arc<dyn ModelRepo>) -> Self {
+    pub fn new(port: u16, model_repo: Arc<dyn ModelRepo + Send + Sync>) -> Self {
         Self { port, model_repo }
     }
     pub async fn serve(&self, token: CancellationToken) -> crate::Result<()> {
@@ -61,11 +61,11 @@ mod models {
 
     #[derive(Clone)]
     pub struct Deps {
-        model_repo: Arc<dyn ModelRepo>,
+        model_repo: Arc<dyn ModelRepo + Send + Sync>,
     }
 
     impl Deps {
-        pub fn new(model_repo: Arc<dyn ModelRepo>) -> Self {
+        pub fn new(model_repo: Arc<dyn ModelRepo + Send + Sync>) -> Self {
             Self { model_repo }
         }
     }

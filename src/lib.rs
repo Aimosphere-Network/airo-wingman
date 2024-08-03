@@ -12,20 +12,20 @@ use tokio_util::{sync::CancellationToken, task::TaskTracker};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 use crate::{
-    chain::{ChainClient, ChainEvent, ChainListener, TxSubmitter},
     config::Config,
     data::{ModelRepo, ModelRepoFac},
     engine::{BidEngine, Engine, ExecutionEngine},
     http::HttpServer,
+    protocol::{AiroClient, ChainEvent, ChainListener, Protocol, TxSubmitter},
     types::Result,
 };
 
-pub mod chain;
 pub mod cog;
 pub mod config;
 pub mod data;
 pub mod engine;
 pub mod http;
+pub mod protocol;
 pub mod types;
 
 pub async fn start() -> Result<()> {
@@ -39,19 +39,19 @@ pub async fn start() -> Result<()> {
     let token = CancellationToken::new();
     tracker.spawn_shutdown_listener(token.clone());
 
-    let chain_client = ChainClient::new(&airo_node, &airo_suri).await.map_err(|e| {
+    let airo_client = AiroClient::new(&airo_node, &airo_suri).await.map_err(|e| {
         tracing::error!("🚫 Failed to connect to airo node: {e}");
         e
     })?;
-    let chain_client = Arc::new(chain_client);
+    let airo_client = Arc::new(airo_client);
     let (chain_tx, chain_rx_bid) = channel(128);
     let chain_rx_exec = chain_tx.subscribe();
-    tracker.spawn_chain_listener(token.clone(), chain_client.clone(), chain_tx);
-    tracker.spawn_execution_engine(token.clone(), chain_rx_exec);
+    tracker.spawn_chain_listener(token.clone(), airo_client.clone(), chain_tx);
+    tracker.spawn_execution_engine(token.clone(), chain_rx_exec, airo_client.clone());
 
     let model_repo = Arc::new(ModelRepoFac::in_memory());
     tracker.spawn_http_server(token.clone(), http_port, model_repo.clone());
-    tracker.spawn_bid_engine(token, chain_rx_bid, model_repo, chain_client);
+    tracker.spawn_bid_engine(token, chain_rx_bid, airo_client, model_repo);
 
     tracker.close();
     tracker.wait().await;
@@ -74,7 +74,7 @@ trait TaskTrackerEx {
     fn spawn_chain_listener(
         &self,
         token: CancellationToken,
-        chain_listener: Arc<dyn ChainListener>,
+        chain_listener: Arc<dyn ChainListener + Send + Sync>,
         chain_tx: Sender<ChainEvent>,
     );
 
@@ -82,18 +82,23 @@ trait TaskTrackerEx {
         &self,
         token: CancellationToken,
         port: u16,
-        model_repo: Arc<dyn ModelRepo>,
+        model_repo: Arc<dyn ModelRepo + Send + Sync>,
     );
 
     fn spawn_bid_engine(
         &self,
         token: CancellationToken,
         chain_rx: Receiver<ChainEvent>,
-        model_repo: Arc<dyn ModelRepo>,
-        tx_sender: Arc<dyn TxSubmitter>,
+        tx_sender: Arc<dyn TxSubmitter + Send + Sync>,
+        model_repo: Arc<dyn ModelRepo + Send + Sync>,
     );
 
-    fn spawn_execution_engine(&self, token: CancellationToken, chain_rx: Receiver<ChainEvent>);
+    fn spawn_execution_engine(
+        &self,
+        token: CancellationToken,
+        chain_rx: Receiver<ChainEvent>,
+        protocol_client: Arc<dyn Protocol + Send + Sync>,
+    );
 
     fn spawn_shutdown_listener(&self, token: CancellationToken);
 }
@@ -102,7 +107,7 @@ impl TaskTrackerEx for TaskTracker {
     fn spawn_chain_listener(
         &self,
         token: CancellationToken,
-        chain_listener: Arc<dyn ChainListener>,
+        chain_listener: Arc<dyn ChainListener + Send + Sync>,
         chain_tx: Sender<ChainEvent>,
     ) {
         self.spawn(critical_task("chain_listener", token.clone(), async move {
@@ -114,7 +119,7 @@ impl TaskTrackerEx for TaskTracker {
         &self,
         token: CancellationToken,
         port: u16,
-        model_repo: Arc<dyn ModelRepo>,
+        model_repo: Arc<dyn ModelRepo + Send + Sync>,
     ) {
         let http = HttpServer::new(port, model_repo);
         self.spawn(critical_task(
@@ -128,17 +133,22 @@ impl TaskTrackerEx for TaskTracker {
         &self,
         token: CancellationToken,
         chain_rx: Receiver<ChainEvent>,
-        model_repo: Arc<dyn ModelRepo>,
-        tx_sender: Arc<dyn TxSubmitter>,
+        tx_sender: Arc<dyn TxSubmitter + Send + Sync>,
+        model_repo: Arc<dyn ModelRepo + Send + Sync>,
     ) {
-        let mut bid_engine = BidEngine::new(chain_rx, model_repo, tx_sender);
+        let mut bid_engine = BidEngine::new(chain_rx, tx_sender, model_repo);
         self.spawn(critical_task("bid_engine", token.clone(), async move {
             bid_engine.run(token).await
         }));
     }
 
-    fn spawn_execution_engine(&self, token: CancellationToken, chain_rx: Receiver<ChainEvent>) {
-        let mut execution_engine = ExecutionEngine::new(chain_rx);
+    fn spawn_execution_engine(
+        &self,
+        token: CancellationToken,
+        chain_rx: Receiver<ChainEvent>,
+        protocol_client: Arc<dyn Protocol + Send + Sync>,
+    ) {
+        let mut execution_engine = ExecutionEngine::new(chain_rx, protocol_client);
         self.spawn(critical_task("execution_engine", token.clone(), async move {
             execution_engine.run(token).await
         }));

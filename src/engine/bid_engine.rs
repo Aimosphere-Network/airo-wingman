@@ -4,23 +4,23 @@ use async_trait::async_trait;
 use tokio::sync::broadcast::{error::RecvError, Receiver};
 
 use crate::{
-    chain::{ChainEvent, TxSubmitter},
     data::ModelRepo,
     engine::Engine,
+    protocol::{ChainEvent, TxSubmitter},
     types::{stdResult, Result},
 };
 
 pub struct BidEngine {
     chain_rx: Receiver<ChainEvent>,
-    model_repo: Arc<dyn ModelRepo>,
-    tx_submitter: Arc<dyn TxSubmitter>,
+    tx_submitter: Arc<dyn TxSubmitter + Send + Sync>,
+    model_repo: Arc<dyn ModelRepo + Send + Sync>,
 }
 
 impl BidEngine {
     pub fn new(
         chain_rx: Receiver<ChainEvent>,
-        model_repo: Arc<dyn ModelRepo>,
-        tx_submitter: Arc<dyn TxSubmitter>,
+        tx_submitter: Arc<dyn TxSubmitter + Send + Sync>,
+        model_repo: Arc<dyn ModelRepo + Send + Sync>,
     ) -> Self {
         tracing::info!("🚀 Starting bid engine");
         Self { chain_rx, model_repo, tx_submitter }
@@ -39,7 +39,7 @@ impl Engine for BidEngine {
                     model.id
                 );
 
-                self.tx_submitter.create_bid(order_id, model.details.price_per_request).await?;
+                self.tx_submitter.bid_create(order_id, model.details.price_per_request).await?;
             }
         }
 

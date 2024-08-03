@@ -7,12 +7,12 @@ pub use bid_engine::BidEngine;
 pub use execution_engine::ExecutionEngine;
 
 use crate::{
-    chain::ChainEvent,
+    protocol::ChainEvent,
     types::{stdResult, Result},
 };
 
-mod bid_engine;
-mod execution_engine;
+pub mod bid_engine;
+pub mod execution_engine;
 
 #[derive(Error, Debug)]
 pub enum Error {

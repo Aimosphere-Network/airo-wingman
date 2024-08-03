@@ -25,7 +25,7 @@ pub struct HTTPValidationError {
 }
 
 /// Status of setup or prediction.
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Debug, PartialEq, Deserialize, strum::Display)]
 #[serde(rename_all = "lowercase")]
 pub enum Status {
     Starting,
@@ -152,17 +152,13 @@ impl Connector {
 
     /// Make a prediction. This function uses the `POST /predictions` endpoint of the Cog API to
     /// make a prediction. This method is blocking.
-    pub async fn predict<In, Out>(&self, inputs: Option<In>) -> Result<PredictionResponse<In, Out>>
+    pub async fn predict<In, Out>(&self, inputs: In) -> Result<PredictionResponse<In, Out>>
     where
         In: Serialize + DeserializeOwned,
         Out: DeserializeOwned,
     {
         let url = self.url.join("predictions")?;
-        let req = if let Some(inputs) = inputs {
-            json!({ "input": inputs })
-        } else {
-            json!({ "input": {} })
-        };
+        let req = json!({ "input": inputs });
 
         let res = self.http.post(url).json(&req).send().await?;
         if res.status() == StatusCode::UNPROCESSABLE_ENTITY {
