@@ -91,6 +91,7 @@ async fn predict(model_id: &ModelId, input: &[u8]) -> Result<Vec<u8>> {
     let url = format!("http://cog-{model_id}:5000");
     tracing::debug!("🔎 Predicting {input:?} with {url}");
     let cog = Connector::new(&url)?;
+    cog.ensure_ready().await?;
     let response: ExecutionResult = cog.predict::<Value, Value>(input).await?.into();
     tracing::debug!("🔎 Predicted {response:?}");
     serde_json::to_vec(&response).map_err(Into::into)
