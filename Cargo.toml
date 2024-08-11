@@ -12,7 +12,7 @@ name = "airo_wingman"
 path = "src/lib.rs"
 
 [[bin]]
-name = "airo-wingman"
+name = "wingman"
 path = "src/main.rs"
 
 [profile.release]

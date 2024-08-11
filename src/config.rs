@@ -23,7 +23,7 @@ impl Config {
         }
 
         Self {
-            http_port: envmnt::get_u16("AW_PORT", 9090),
+            http_port: envmnt::get_u16("AW_PORT", 8000),
             airo_node: envmnt::get_or("AIRO_NODE", "ws://127.0.0.1:9944"),
             airo_suri: get_or_panic("AIRO_SURI"),
         }
