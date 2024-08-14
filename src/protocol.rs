@@ -128,7 +128,8 @@ pub trait ChainListener {
 #[async_trait]
 impl ChainListener for AiroClient {
     async fn listen(&self, token: CancellationToken, sender: Sender<ChainEvent>) -> Result<()> {
-        let mut blocks_sub = self.client.blocks().subscribe_finalized().await?;
+        // TODO. Handle `subscribe_best` might result in a possible rollback.
+        let mut blocks_sub = self.client.blocks().subscribe_best().await?;
         while let Some(block) = blocks_sub.next().await {
             tokio::select! {
                 _ = token.cancelled() => return Ok(()),
