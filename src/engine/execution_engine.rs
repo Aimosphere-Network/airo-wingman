@@ -8,6 +8,7 @@ use crate::{
     cog::{Connector, PredictionResponse},
     engine::Engine,
     protocol::{ChainEvent, Protocol},
+    retry_on_err_or_none,
     types::{stdResult, AgreementId, ContentId, ExecutionResult, ModelId, Result},
 };
 
@@ -69,14 +70,18 @@ async fn process_request(
     request_index: u32,
     content_id: ContentId,
 ) -> Result<()> {
-    const DOWNLOAD_RETRIES: usize = 5;
+    const FIVE_TIMES: usize = 5;
 
     tracing::info!("📩 Request {request_index} on agreement {agreement_id} received");
-    let Some(agreement) = protocol_client.get_agreement(agreement_id).await? else {
+    let Some(agreement) =
+        retry_on_err_or_none!(FIVE_TIMES, protocol_client.get_agreement(agreement_id).await)?
+    else {
         tracing::warn!("⚠️ Agreement {agreement_id} not found. The state might be inconsistent");
         return Ok(());
     };
-    let Some(content) = protocol_client.retry_download(content_id, DOWNLOAD_RETRIES).await? else {
+    let Some(content) =
+        retry_on_err_or_none!(FIVE_TIMES, protocol_client.download(content_id).await)?
+    else {
         tracing::warn!("⚠️ Content {content_id} not found");
         return Ok(());
     };

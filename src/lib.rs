@@ -27,6 +27,7 @@ pub mod engine;
 pub mod http;
 pub mod protocol;
 pub mod types;
+pub mod utils;
 
 pub async fn start() -> Result<()> {
     let Config { http_port, airo_node, airo_suri } = Config::new();

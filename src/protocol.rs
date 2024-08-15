@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use std::{str::FromStr, time::Duration};
+use std::str::FromStr;
 use subxt::{
     backend::{legacy::rpc_methods::Bytes, rpc::RpcClient},
     config::{
@@ -252,22 +252,6 @@ pub trait DataExchange {
         let hash = Hasher::hash(&data);
         self.upload(hash, data).await?;
         Ok(hash)
-    }
-
-    async fn retry_download(
-        &self,
-        content_id: ContentId,
-        max_retries: usize,
-    ) -> Result<Option<Vec<u8>>> {
-        let mut retries = 0;
-        loop {
-            match self.download(content_id).await {
-                Ok(None) | Err(_) if retries < max_retries => retries += 1,
-                res => return res,
-            }
-
-            tokio::time::sleep(Duration::from_secs(1)).await;
-        }
     }
 }
 

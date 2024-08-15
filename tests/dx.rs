@@ -8,5 +8,5 @@ async fn test_data_exchange() {
     let client = AiroClient::new("ws://localhost:9944", "//Alice").await.unwrap();
     let content_id = client.hash_upload(data.clone()).await;
     assert!(content_id.is_ok());
-    assert_eq!(Some(data), client.retry_download(content_id.unwrap(), 5).await.unwrap());
+    assert_eq!(Some(data), client.download(content_id.unwrap()).await.unwrap());
 }
