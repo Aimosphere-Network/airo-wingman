@@ -1,6 +1,12 @@
-use std::{ffi::OsStr, path::Path, process::Command};
+use base64::{engine::general_purpose::STANDARD as Base64, Engine};
+use std::{
+    ffi::OsStr,
+    fs,
+    path::{Path, PathBuf},
+    process::Command,
+};
 
-fn cmd<I, S, P>(program: &str, args: I, dir: Option<P>) -> String
+pub fn cmd<I, S, P>(program: &str, args: I, dir: Option<P>) -> String
 where
     I: IntoIterator<Item = S>,
     S: AsRef<OsStr>,
@@ -51,4 +57,11 @@ pub fn build_and_run(model: &str, port: Option<u16>) -> u16 {
     let allocated_port = docker_port(&container_id);
     println!("Running {model} on {allocated_port}");
     allocated_port
+}
+
+pub fn encode_file(path: &str) -> String {
+    let bytes =
+        fs::read(PathBuf::from(path)).unwrap_or_else(|_| panic!("Couldn't find file {path})"));
+    let mime = tree_magic_mini::from_u8(&bytes);
+    format!("data:{mime};base64,{}", Base64.encode(bytes))
 }
