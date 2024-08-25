@@ -24,3 +24,7 @@ target/
 # IDEs
 .vscode
 .idea
+
+
+**/__pycache__/*
+**/.cog/tmp/*
