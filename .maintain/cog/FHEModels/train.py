@@ -1,13 +1,12 @@
 import numpy
 import joblib
-import pickle
 import os
 from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.tree import DecisionTreeClassifier
 # from concrete.ml.sklearn import DecisionTreeClassifier
 
-#from sklearn.utils.validation import check_is_fitted
+from sklearn.utils.validation import check_is_fitted
 
 
 OPEN_ML_DATASET = 44
@@ -15,8 +14,8 @@ TEST_SIZE = 10
 TEST_DIR = 'test_data'
 GT_DIR = 'ground_truths'
 
-model_file = 'trained_model.pkl'
-train_data_file = 'train_data.pkl'
+model_file = 'model.pkl'
+train_data_file = 'train_data.csv'
 
 
 """DATA MANAGEMENT"""
@@ -95,7 +94,12 @@ model = DecisionTreeClassifier(
 # Train model
 model.fit(x_train, y_train)
 
+try:
+    check_is_fitted(model)
+    print("model fitted.")
+except ValueError:
+    print("model not fitted.")
+
 # Save the model to a file if it doesn't exist
 if not os.path.exists(model_file):
-    with open(model_file, 'wb') as f:
-        pickle.dump(model, f)
+   joblib.dump(model, model_file)

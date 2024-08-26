@@ -11,15 +11,15 @@ class Predictor(BasePredictor):
         # Load training data
         with open("train_data.csv", 'rb') as file: 
             train_data = joblib.load(file)
-
-        # Convert model into concrete model
-        self.model = concrete.DecisionTreeClassifier.from_sklearn_model(model)
         
+        # Convert model into concrete model
+        self.model = concrete.DecisionTreeClassifier.from_sklearn_model(model, n_bits=6)
+
         # Generate circuit from trained model, using training data as shape
-        self.circuit = model.compile(train_data)
+        self.circuit = self.model.compile(train_data)
         
         # Generate keys for circuit
-        self.circuit.client.keygen(force=False)
+        self.circuit.client.keygen(force=True)
 
 
     def predict(
