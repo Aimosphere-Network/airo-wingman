@@ -1,31 +1,24 @@
 import joblib
-import pickle
 import pandas as pd
 import concrete.ml.sklearn as concrete
 from cog import BasePredictor, Input, Path
 
 class Predictor(BasePredictor):
     def setup(self):
-        # Load the model and training data from the provided .pkl files
-        with open("sklearn_model/trained_model.pkl", "rb") as file:
-            model = pickle.load(file)   
-        with open("sklearn_model/train_data.pkl", 'rb') as file: 
-            train_data = pickle.load(file)
+        # Load model
+        with open("model.pkl", "rb") as file:
+            model = joblib.load(file)   
+        # Load training data
+        with open("train_data.csv", 'rb') as file: 
+            train_data = joblib.load(file)
 
-        # Compile concrete model into FHE circuit
-        try: 
-            self.circuit = model.compile(train_data)
-            print("FHE Circuit running!")
-        except:
-            print("FHE Circuit generation failed.")
-            try:
-                # Use ConcreteDecisionTreeClassifier as a fallback
-                self.model = concrete.ConcreteDecisionTreeClassifier.from_sklearn_model(model)
-                self.circuit = model.compile(train_data)
-                print("FHE Circuit running!")
-            except:
-                print("FHE Circuit generation failed.")
+        # Convert model into concrete model
+        self.model = concrete.DecisionTreeClassifier.from_sklearn_model(model)
         
+        # Generate circuit from trained model, using training data as shape
+        self.circuit = model.compile(train_data)
+        
+        # Generate keys for circuit
         self.circuit.client.keygen(force=False)
 
 

@@ -4,9 +4,10 @@ import pickle
 import os
 from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split, GridSearchCV
-from concrete.ml.sklearn import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier
+# from concrete.ml.sklearn import DecisionTreeClassifier
 
-# from sklearn.utils.validation import check_is_fitted
+#from sklearn.utils.validation import check_is_fitted
 
 
 OPEN_ML_DATASET = 44
@@ -89,7 +90,6 @@ model = DecisionTreeClassifier(
     min_samples_leaf=gs_results.best_params_["min_samples_leaf"],
     min_samples_split=gs_results.best_params_["min_samples_split"],
     max_depth=gs_results.best_params_["max_depth"],
-    n_bits=6,
 ) 
 
 # Train model
