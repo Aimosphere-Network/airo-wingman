@@ -1,10 +1,14 @@
 import joblib
 import numpy as np
 import concrete.ml.sklearn as concrete
+import csv
 
 model_file = "model.pkl"
 train_data_file = "train_data.csv"
 path = "test_data/test_data0-10.csv"
+gt_data_file = "ground_truths/ground_truth0-10.csv"
+
+ground_truths = joblib.load(gt_data_file)
 
  # Load model
 sklearn_model = joblib.load(model_file)   
@@ -24,10 +28,11 @@ fhe_circuit.keygen(force=True)
 requests = joblib.load(path)
 
 # Predict for each request
-for req in requests:
+for req, gt in zip(requests, ground_truths):
+    """Explicit FHE circuit run"""
     # Quantize input (float)
     q_req = concrete_model.quantize_input(req.reshape(1, -1))
-            
+                
     # Encrypt the input
     q_req_enc = fhe_circuit.encrypt(q_req)
 
@@ -40,4 +45,19 @@ for req in requests:
     # De-quantize result
     result = concrete_model.dequantize_output(q_result)
 
-    print(q_result.flatten().tolist())
+    # Apply either the sigmoid if it is a binary classification task, which is the case in this 
+    # example, or a softmax function in order to get the probabilities (in the clear)
+    proba = concrete_model.post_processing(result)
+
+    # Since this model does classification, apply the argmax to get the class predictions (in the clear)
+    # Note that regression models won't need the following line
+    result = np.argmax(proba, axis=1)
+
+    """Implicit FHE circuit run"""
+    result2 = concrete_model.predict(req, fhe="execute")
+    
+    print("Explicit FHE:", result[0])
+    print("Implicit FHE:", result2[0])
+    print("Ground truth", gt)
+    print("-------------------------------")
+    
