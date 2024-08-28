@@ -32,7 +32,7 @@ class Predictor(BasePredictor):
 
         for req in requests:
             # Quantize input (float)
-            q_req = self.concrete_model.quantize_input([req])
+            q_req = self.concrete_model.quantize_input(req.reshape(1, -1))
             
             # Encrypt the input
             q_req_enc = self.fhe_circuit.encrypt(q_req)
@@ -46,18 +46,6 @@ class Predictor(BasePredictor):
             # De-quantize result
             result = self.concrete_model.dequantize_output(q_result)
 
-            print(result)
-
-        #     # Apply either the sigmoid if it is a binary classification task, which is the case in this 
-        #     # example, or a softmax function in order to get the probabilities (in the clear)
-        #     y_proba = model.post_processing(y)
-
-        #     # Since this model does classification, apply the argmax to get the class predictions (in the clear)
-        #     # Note that regression models won't need the following line
-        #     y_class = numpy.argmax(y_proba, axis=1)
-
-        #     y_pred_fhe_step += list(y_class)
-
-        # y_pred_fhe_step = numpy.array(y_pred_fhe_step)
+            print(q_result.flatten().tolist())
 
 
