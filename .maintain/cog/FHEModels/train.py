@@ -43,7 +43,7 @@ if not os.path.exists(TEST_DIR):
 # Dump ground truth data into files
 if not os.path.exists(GT_DIR):
     os.makedirs(GT_DIR)
-    for i in range(0, len(x_test), TEST_SIZE):
+    for i in range(0, len(y_test), TEST_SIZE):
         file_path = os.path.join(GT_DIR, f'ground_truth{i}-{i+TEST_SIZE}.csv')
         joblib.dump(y_test[i:TEST_SIZE+i], file_path)
 
