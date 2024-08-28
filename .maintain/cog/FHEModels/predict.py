@@ -1,5 +1,5 @@
 import joblib
-import pandas as pd
+import numpy as np
 import concrete.ml.sklearn as concrete
 from cog import BasePredictor, Input, Path
 
@@ -29,8 +29,10 @@ class Predictor(BasePredictor):
 
         # Load features from .csv file
         requests = joblib.load(path)
-
+        
+        results = []
         for req in requests:
+            """Explicit FHE circuit run"""
             # Quantize input (float)
             q_req = self.concrete_model.quantize_input(req.reshape(1, -1))
             
@@ -46,6 +48,19 @@ class Predictor(BasePredictor):
             # De-quantize result
             result = self.concrete_model.dequantize_output(q_result)
 
-            print(q_result.flatten().tolist())
+            # Apply either the sigmoid if it is a binary classification task, which is the case in this 
+            # example, or a softmax function in order to get the probabilities (in the clear)
+            proba = self.concrete_model.post_processing(result)
+
+            # Since this model does classification, apply the argmax to get the class predictions (in the clear)
+            # Note that regression models won't need the following line
+            result = np.argmax(proba, axis=1)
+
+            """Implicit FHE circuit run"""
+            # result = concrete_model.predict(req, fhe="execute")
+
+            results += list(result)
+        
+        print(results)
 
 
