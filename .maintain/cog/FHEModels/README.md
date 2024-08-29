@@ -14,3 +14,5 @@ curl http://localhost:5000/predictions -X POST \
     -d '{"input": {"pkl": Path}}'
 
 cog predict -i path=@test_data/test_data0-10.csv
+
+python3 test.py >> test_results.txt 2>&1
