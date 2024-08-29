@@ -9,6 +9,7 @@ class TestPredictionComparison(unittest.TestCase):
     def setUp(self):
         self.test_data_dir = 'test_data'
         self.ground_truths_dir = 'ground_truths'
+        
     
     def test_predictions(self):
         total_matches = 0
@@ -20,10 +21,10 @@ class TestPredictionComparison(unittest.TestCase):
                 ground_truth_file_path = os.path.join(self.ground_truths_dir, file_name)
 
                 # Run `generate_circuit_and_prediction.py` script
-                result = subprocess.run(['python3', 'generate_circuit_and_prediction.py', test_file_path], capture_output=True, text=True)
+                result = subprocess.run(['python3', 'generate_circuit_and_predict.py', test_file_path], capture_output=True, text=True)
                 
                 # Convert script output to numpy array
-                output_vector = np.array([float(x) for x in result.stdout.split()])
+                output_vector = np.array([int(x) for x in result.stdout.strip().split()])
 
                 # Read ground truth vector
                 ground_truth_vector = joblib.load(ground_truth_file_path)
