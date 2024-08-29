@@ -57,7 +57,7 @@ class Predictor(BasePredictor):
             result = np.argmax(proba, axis=1)
 
             """Implicit FHE circuit run"""
-            # result = concrete_model.predict(req, fhe="execute")
+            # result = self.concrete_model.predict(req, fhe="execute")
 
             results += list(result)
         

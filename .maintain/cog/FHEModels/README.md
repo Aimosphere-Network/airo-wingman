@@ -11,8 +11,8 @@ docker run -d -p 5001:5000 --platform=linux/amd64 my-model
 
 curl http://localhost:5000/predictions -X POST \
     -H 'Content-Type: application/json' \
-    -d '{"input": {"path": Path}}'
+    -d '{"input": {"path": "test_data/0-10.csv"}}'
 
-cog predict -i path=@test_data/test_data0-10.csv
+cog predict -i path=@test_data/0-10.csv
 
 python3 test.py >> test_results.txt 2>&1

@@ -1,0 +1,284 @@
+Ran 1 test in 3930.674s
+
+OK
+100-110.csv
+[0 1 0 1 1 0 0 1 1 0]
+[0 1 0 1 1 0 0 1 1 1]
+Matches: 9 | Success Percentage: 90.00%
+630-640.csv
+[1 1 0 0 0 1 0 1 0 0]
+[1 1 0 0 0 1 0 1 0 0]
+Matches: 10 | Success Percentage: 100.00%
+130-140.csv
+[0 1 1 0 0 0 1 0 0 1]
+[0 1 1 0 0 0 1 0 1 1]
+Matches: 9 | Success Percentage: 90.00%
+600-610.csv
+[1 1 0 0 0 1 0 1 0 0]
+[1 1 1 0 1 1 0 1 0 0]
+Matches: 8 | Success Percentage: 80.00%
+550-560.csv
+[0 0 1 0 1 0 0 0 0 0]
+[0 0 1 0 1 0 0 0 0 0]
+Matches: 10 | Success Percentage: 100.00%
+180-190.csv
+[0 0 0 0 1 0 0 0 0 0]
+[0 0 0 0 1 0 0 0 0 0]
+Matches: 10 | Success Percentage: 100.00%
+350-360.csv
+[0 0 0 0 0 1 0 1 0 1]
+[0 0 0 0 0 1 0 1 1 1]
+Matches: 9 | Success Percentage: 90.00%
+40-50.csv
+[1 0 0 0 1 1 1 0 0 1]
+[1 0 0 0 1 1 1 0 1 1]
+Matches: 9 | Success Percentage: 90.00%
+660-670.csv
+[0 1 1 0 0 0 1 1 0 0]
+[0 1 1 0 0 0 1 1 0 0]
+Matches: 10 | Success Percentage: 100.00%
+160-170.csv
+[1 0 1 0 1 0 1 0 0 1]
+[1 1 1 0 1 0 1 1 0 1]
+Matches: 8 | Success Percentage: 80.00%
+680-690.csv
+[0 1 1 1 0 0 0 0 0 1]
+[0 1 1 1 0 0 0 0 1 1]
+Matches: 9 | Success Percentage: 90.00%
+450-460.csv
+[0 0 0 1 0 0 1 1 1 1]
+[0 0 0 1 0 0 1 1 1 1]
+Matches: 10 | Success Percentage: 100.00%
+90-100.csv
+[1 1 0 1 0 0 1 0 1 1]
+[1 1 0 1 0 0 1 0 1 1]
+Matches: 10 | Success Percentage: 100.00%
+250-260.csv
+[0 0 0 0 0 0 0 1 0 0]
+[0 1 0 0 0 1 1 1 1 0]
+Matches: 6 | Success Percentage: 60.00%
+490-500.csv
+[1 1 0 0 1 1 0 1 0 0]
+[1 1 1 0 1 0 0 1 0 0]
+Matches: 8 | Success Percentage: 80.00%
+370-380.csv
+[1 1 0 1 0 0 0 0 1 0]
+[1 1 0 1 0 0 0 0 1 0]
+Matches: 10 | Success Percentage: 100.00%
+290-300.csv
+[0 1 0 0 1 1 0 0 0 0]
+[0 1 0 0 1 1 0 0 0 0]
+Matches: 10 | Success Percentage: 100.00%
+570-580.csv
+[1 0 0 1 0 1 1 1 1 0]
+[1 0 0 1 0 1 1 1 1 0]
+Matches: 10 | Success Percentage: 100.00%
+590-600.csv
+[0 1 1 0 0 1 0 0 0 1]
+[0 1 1 1 0 1 0 0 0 1]
+Matches: 9 | Success Percentage: 90.00%
+140-150.csv
+[1 1 0 0 1 1 0 0 0 1]
+[1 1 0 0 1 1 0 0 1 1]
+Matches: 9 | Success Percentage: 90.00%
+640-650.csv
+[0 0 0 0 1 0 1 0 0 0]
+[0 0 0 0 1 0 1 0 0 1]
+Matches: 9 | Success Percentage: 90.00%
+70-80.csv
+[0 0 0 1 1 1 0 0 0 1]
+[0 0 0 1 1 0 0 0 0 1]
+Matches: 9 | Success Percentage: 90.00%
+270-280.csv
+[1 0 0 0 0 0 1 0 1 0]
+[1 0 0 0 0 0 1 0 1 0]
+Matches: 10 | Success Percentage: 100.00%
+470-480.csv
+[1 0 0 0 0 1 0 0 0 0]
+[0 0 0 0 0 0 1 0 0 0]
+Matches: 7 | Success Percentage: 70.00%
+620-630.csv
+[1 1 0 0 0 0 1 1 0 0]
+[1 1 0 1 0 0 1 1 0 1]
+Matches: 8 | Success Percentage: 80.00%
+310-320.csv
+[1 0 1 1 0 0 0 0 1 0]
+[1 0 1 1 0 1 0 1 1 1]
+Matches: 7 | Success Percentage: 70.00%
+510-520.csv
+[1 1 1 1 0 1 1 0 1 1]
+[1 1 1 1 0 1 1 0 0 1]
+Matches: 9 | Success Percentage: 90.00%
+210-220.csv
+[0 1 0 0 0 0 0 0 0 0]
+[0 1 0 0 0 0 0 0 0 0]
+Matches: 10 | Success Percentage: 100.00%
+410-420.csv
+[0 0 1 0 0 1 1 0 0 0]
+[0 1 1 0 0 1 0 0 0 0]
+Matches: 8 | Success Percentage: 80.00%
+390-400.csv
+[0 0 1 1 0 1 0 1 0 0]
+[0 0 1 1 0 1 0 1 0 0]
+Matches: 10 | Success Percentage: 100.00%
+120-130.csv
+[0 0 1 0 1 0 0 0 1 0]
+[1 0 1 0 1 0 0 0 1 0]
+Matches: 9 | Success Percentage: 90.00%
+330-340.csv
+[0 0 1 0 0 1 0 1 0 0]
+[0 0 1 0 0 1 0 1 1 0]
+Matches: 9 | Success Percentage: 90.00%
+60-70.csv
+[1 0 0 1 1 0 0 0 1 0]
+[1 0 1 1 1 0 0 0 1 0]
+Matches: 9 | Success Percentage: 90.00%
+200-210.csv
+[0 0 1 0 0 1 0 0 0 1]
+[0 0 0 0 0 1 0 0 0 1]
+Matches: 9 | Success Percentage: 90.00%
+530-540.csv
+[0 0 0 1 1 0 1 1 1 0]
+[0 0 0 1 1 0 1 1 1 0]
+Matches: 10 | Success Percentage: 100.00%
+400-410.csv
+[1 0 0 0 1 1 0 1 1 1]
+[1 0 0 0 1 1 0 1 1 1]
+Matches: 10 | Success Percentage: 100.00%
+30-40.csv
+[1 1 0 0 0 0 1 1 0 1]
+[1 1 0 0 0 0 1 1 0 1]
+Matches: 10 | Success Percentage: 100.00%
+300-310.csv
+[0 1 0 0 0 0 1 1 1 0]
+[0 1 0 0 0 0 1 1 1 0]
+Matches: 10 | Success Percentage: 100.00%
+230-240.csv
+[0 0 0 0 0 0 0 0 1 1]
+[0 0 0 0 1 0 0 0 1 1]
+Matches: 9 | Success Percentage: 90.00%
+500-510.csv
+[1 0 1 1 1 1 1 1 1 1]
+[0 0 1 1 1 1 1 1 1 1]
+Matches: 9 | Success Percentage: 90.00%
+430-440.csv
+[0 1 0 0 1 0 0 0 1 0]
+[1 1 0 0 1 0 0 0 1 0]
+Matches: 9 | Success Percentage: 90.00%
+0-10.csv
+[0 0 0 1 0 0 0 0 0 0]
+[0 0 0 1 0 1 0 0 0 0]
+Matches: 9 | Success Percentage: 90.00%
+480-490.csv
+[1 0 0 1 1 0 0 0 0 0]
+[1 0 1 1 1 0 0 0 0 0]
+Matches: 9 | Success Percentage: 90.00%
+650-660.csv
+[1 0 0 1 0 0 0 1 0 1]
+[1 1 0 1 0 0 0 1 0 1]
+Matches: 9 | Success Percentage: 90.00%
+360-370.csv
+[0 1 1 0 0 0 0 0 1 0]
+[0 1 1 0 0 0 0 0 1 0]
+Matches: 10 | Success Percentage: 100.00%
+560-570.csv
+[1 0 0 0 0 1 1 0 0 1]
+[1 0 1 0 0 1 1 0 0 1]
+Matches: 9 | Success Percentage: 90.00%
+280-290.csv
+[1 1 0 0 1 0 0 0 0 1]
+[0 1 0 0 1 0 0 1 0 1]
+Matches: 8 | Success Percentage: 80.00%
+580-590.csv
+[0 0 1 0 0 0 0 1 0 1]
+[0 0 1 0 1 0 0 1 0 1]
+Matches: 9 | Success Percentage: 90.00%
+260-270.csv
+[1 0 1 0 1 1 1 0 0 0]
+[1 0 1 0 1 1 1 0 0 0]
+Matches: 10 | Success Percentage: 100.00%
+460-470.csv
+[1 1 0 0 0 0 1 1 1 1]
+[1 1 0 0 0 0 1 1 1 1]
+Matches: 10 | Success Percentage: 100.00%
+10-20.csv
+[0 0 0 1 0 0 1 1 1 0]
+[0 0 0 1 1 0 1 1 1 0]
+Matches: 9 | Success Percentage: 90.00%
+380-390.csv
+[1 0 1 0 1 0 1 0 0 0]
+[1 1 1 0 1 0 1 0 0 1]
+Matches: 8 | Success Percentage: 80.00%
+150-160.csv
+[0 1 1 0 0 1 0 0 0 0]
+[0 1 1 1 0 1 1 1 1 0]
+Matches: 6 | Success Percentage: 60.00%
+440-450.csv
+[0 0 1 0 0 1 0 0 0 1]
+[0 0 1 1 0 1 0 0 0 1]
+Matches: 9 | Success Percentage: 90.00%
+240-250.csv
+[0 1 1 0 0 0 0 1 0 0]
+[0 1 1 1 0 0 0 1 0 0]
+Matches: 9 | Success Percentage: 90.00%
+670-680.csv
+[1 1 0 1 0 1 0 1 0 0]
+[1 1 0 1 0 1 0 1 0 1]
+Matches: 9 | Success Percentage: 90.00%
+690-700.csv
+[0]
+[0]
+Matches: 1 | Success Percentage: 100.00%
+80-90.csv
+[0 0 0 0 0 0 1 1 0 0]
+[0 0 0 0 0 0 1 1 1 0]
+Matches: 9 | Success Percentage: 90.00%
+170-180.csv
+[0 0 0 0 1 0 1 0 0 1]
+[0 0 1 0 1 0 1 0 0 1]
+Matches: 9 | Success Percentage: 90.00%
+20-30.csv
+[0 1 1 0 1 0 1 0 1 1]
+[0 1 1 0 1 0 1 0 1 1]
+Matches: 10 | Success Percentage: 100.00%
+190-200.csv
+[1 0 1 0 0 0 0 0 0 0]
+[1 0 1 0 1 0 0 0 0 0]
+Matches: 9 | Success Percentage: 90.00%
+540-550.csv
+[0 0 0 0 1 1 1 1 1 1]
+[1 0 0 0 1 1 1 1 1 1]
+Matches: 9 | Success Percentage: 90.00%
+340-350.csv
+[0 0 0 0 1 0 0 0 1 1]
+[0 0 0 0 0 0 0 0 1 1]
+Matches: 9 | Success Percentage: 90.00%
+520-530.csv
+[0 1 0 0 1 0 0 0 1 0]
+[0 1 0 0 1 0 0 0 1 0]
+Matches: 10 | Success Percentage: 100.00%
+320-330.csv
+[0 0 0 0 0 1 1 1 1 0]
+[0 0 0 0 0 1 1 1 1 0]
+Matches: 10 | Success Percentage: 100.00%
+50-60.csv
+[1 0 0 1 0 0 0 0 0 0]
+[1 0 0 1 0 0 0 0 0 0]
+Matches: 10 | Success Percentage: 100.00%
+610-620.csv
+[1 0 1 0 1 0 0 0 0 1]
+[1 0 0 0 1 0 0 0 0 1]
+Matches: 9 | Success Percentage: 90.00%
+110-120.csv
+[1 1 1 0 1 1 1 0 0 0]
+[1 1 1 0 1 1 0 0 0 0]
+Matches: 9 | Success Percentage: 90.00%
+420-430.csv
+[0 1 0 0 0 0 1 0 0 0]
+[0 1 0 0 0 0 1 1 0 1]
+Matches: 8 | Success Percentage: 80.00%
+220-230.csv
+[0 1 1 0 1 0 1 0 0 0]
+[0 1 1 1 1 0 1 0 0 0]
+Matches: 9 | Success Percentage: 90.00%
+Overall Success Percentage: 90.74%
