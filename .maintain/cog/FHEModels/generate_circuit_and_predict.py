@@ -1,14 +1,11 @@
 import joblib
 import numpy as np
 import concrete.ml.sklearn as concrete
-import csv
 
 model_file = "model.pkl"
 train_data_file = "train_data.csv"
-path = "test_data/test_data0-10.csv"
-gt_data_file = "ground_truths/ground_truth0-10.csv"
+path = "test_data/0-10.csv"
 
-ground_truths = joblib.load(gt_data_file)
 
  # Load model
 sklearn_model = joblib.load(model_file)   
@@ -27,8 +24,9 @@ fhe_circuit.keygen(force=True)
 # Load features from .csv file
 requests = joblib.load(path)
 
+results = []
 # Predict for each request
-for req, gt in zip(requests, ground_truths):
+for req in requests:
     """Explicit FHE circuit run"""
     # Quantize input (float)
     q_req = concrete_model.quantize_input(req.reshape(1, -1))
@@ -54,10 +52,7 @@ for req, gt in zip(requests, ground_truths):
     result = np.argmax(proba, axis=1)
 
     """Implicit FHE circuit run"""
-    result2 = concrete_model.predict(req, fhe="execute")
-    
-    print("Explicit FHE:", result[0])
-    print("Implicit FHE:", result2[0])
-    print("Ground truth", gt)
-    print("-------------------------------")
-    
+    #result2 = concrete_model.predict(req, fhe="execute")
+    results += list(result)
+
+print(" ".join(map(str, results))) 
