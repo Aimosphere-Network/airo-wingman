@@ -1,11 +1,13 @@
 import joblib
 import numpy as np
 import concrete.ml.sklearn as concrete
+import sys
 
 model_file = "model.pkl"
 train_data_file = "train_data.csv"
-path = "test_data/0-10.csv"
+path = sys.argv[1]
 
+"""SETUP"""
 
  # Load model
 sklearn_model = joblib.load(model_file)   
@@ -20,6 +22,9 @@ fhe_circuit = concrete_model.compile(train_data)
             
 # Generate keys for circuit, force new keygen everytime this runs
 fhe_circuit.keygen(force=True)
+
+
+"""PREDICT"""
 
 # Load features from .csv file
 requests = joblib.load(path)
