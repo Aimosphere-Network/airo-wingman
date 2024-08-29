@@ -61,6 +61,6 @@ class Predictor(BasePredictor):
 
             results += list(result)
         
-        print(results)
+        print(" ".join(map(str, results))) 
 
 
