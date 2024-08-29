@@ -36,13 +36,13 @@ class Predictor(BasePredictor):
             # Quantize input (float)
             q_req = self.concrete_model.quantize_input(req.reshape(1, -1))
             
-            # Encrypt the input
+            # Encrypt input
             q_req_enc = self.fhe_circuit.encrypt(q_req)
 
-            # Execute the linear product in FHE (run circuit for prediction)
+            # Execute linear product in FHE (run circuit for prediction)
             q_result_enc = self.fhe_circuit.run(q_req_enc)
 
-            # Decrypt result (integer)
+            # Decrypt result
             q_result = self.fhe_circuit.decrypt(q_result_enc)
 
             # De-quantize result
