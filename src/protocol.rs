@@ -259,7 +259,7 @@ pub trait DataExchange {
 impl DataExchange for AiroClient {
     async fn upload(&self, content_id: ContentId, data: Vec<u8>) -> Result<()> {
         let data = Bytes::from(data);
-        self.rpc.request("dx_upload", rpc_params![content_id, data]).await?;
+        self.rpc.request::<()>("dx_upload", rpc_params![content_id, data]).await?;
         Ok(())
     }
 
