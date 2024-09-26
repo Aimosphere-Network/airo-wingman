@@ -11,6 +11,7 @@ class TestPredictionComparison(unittest.TestCase):
     def setUp(self):
         self.test_data_dir = 'test_data'
         self.ground_truths_dir = 'ground_truths'
+        self.enc_test_data_dir = "enc_test_data"
          
     def test_predictions(self):
         total_matches = 0
@@ -37,6 +38,12 @@ class TestPredictionComparison(unittest.TestCase):
                 for i in input_data:
                     e_i = client.quantize_encrypt_serialize(i.reshape(1, -1))
                     enc_inputs.append(e_i)
+                
+                # Export encrypted features
+                enc_inputs_file = os.path.join(self.enc_test_data_dir, file_name)
+                if not os.path.exists(self.enc_test_data_dir): 
+                    os.mkdir(self.enc_test_data_dir)
+                joblib.dump(enc_inputs, enc_inputs_file)
 
                 """SERVER: SIMULATE WHAT COG DOES"""
 
@@ -50,7 +57,7 @@ class TestPredictionComparison(unittest.TestCase):
                     enc_outputs.append(e_o)
 
                 """CLIENT"""
-                
+
                 # Decrypt results
                 output_data = []
                 for e_o in enc_outputs:
