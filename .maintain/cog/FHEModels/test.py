@@ -3,14 +3,15 @@ import numpy as np
 import os
 import subprocess
 import joblib
+from concrete.ml.deployment import FHEModelClient, FHEModelServer
 
+fhe_files_dir = "fhe"
 
 class TestPredictionComparison(unittest.TestCase):
     def setUp(self):
         self.test_data_dir = 'test_data'
         self.ground_truths_dir = 'ground_truths'
-        
-    
+         
     def test_predictions(self):
         total_matches = 0
         total_elements = 0
@@ -20,11 +21,45 @@ class TestPredictionComparison(unittest.TestCase):
                 test_file_path = os.path.join(self.test_data_dir, file_name)
                 ground_truth_file_path = os.path.join(self.ground_truths_dir, file_name)
 
-                # Run `generate_circuit_and_prediction.py` script
-                result = subprocess.run(['python3', 'generate_circuit_and_predict.py', test_file_path], capture_output=True, text=True)
+                """CLIENT"""
+
+                # Create client object to manage keys
+                client = FHEModelClient(fhe_files_dir, key_dir="keys")
+
+                # Create private and evaluation keys
+                eval_key = client.get_serialized_evaluation_keys()
+
+                # Load features from .csv file
+                input_data = joblib.load(test_file_path)
+
+                # Encrypt features
+                enc_inputs = []
+                for i in input_data:
+                    e_i = client.quantize_encrypt_serialize(i.reshape(1, -1))
+                    enc_inputs.append(e_i)
+
+                """SERVER: SIMULATE WHAT COG DOES"""
+
+                # Create server object to manage circuit
+                server = FHEModelServer(fhe_files_dir)
+
+                # Run circuit
+                enc_outputs = []
+                for e_i in enc_inputs:
+                    e_o = server.run(e_i, eval_key)
+                    enc_outputs.append(e_o)
+
+                """CLIENT"""
                 
-                # Convert script output to numpy array
-                output_vector = np.array([int(x) for x in result.stdout.strip().split()])
+                # Decrypt results
+                output_data = []
+                for e_o in enc_outputs:
+                    o = np.argmax(client.deserialize_decrypt_dequantize(e_o), axis=1)
+                    output_data.append(o)
+                
+                """EVALUATE RESULTS ACCURACY AND COMPARE TO PLAIN-TEXT SKLEARN"""
+               
+                output_vector = np.concatenate(output_data)
 
                 # Read ground truth vector
                 ground_truth_vector = joblib.load(ground_truth_file_path)
@@ -35,7 +70,9 @@ class TestPredictionComparison(unittest.TestCase):
 
                 # Print results
                 print(file_name)
+                print("FHE result: ")
                 print(output_vector)
+                print("Ground truth: ")
                 print(ground_truth_vector)
                 print(f"Matches: {matches} | Success Percentage: {success_percentage:.2f}%")
 

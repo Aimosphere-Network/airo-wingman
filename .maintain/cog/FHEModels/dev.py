@@ -1,12 +1,17 @@
+"""
+Process from getting data, to training in plain-text, then converting into concrete format
+and saving circuit with server and client information separately
+"""
 import numpy
 import joblib
 import os
 from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.tree import DecisionTreeClassifier
-# from concrete.ml.sklearn import DecisionTreeClassifier
+from concrete.ml.deployment import FHEModelDev
+import concrete.ml.sklearn as concrete
 
-from sklearn.utils.validation import check_is_fitted
+# from sklearn.utils.validation import check_is_fitted
 
 
 OPEN_ML_DATASET = 44
@@ -14,8 +19,7 @@ TEST_SIZE = 10
 TEST_DIR = 'test_data'
 GT_DIR = 'ground_truths'
 
-model_file = 'model.pkl'
-train_data_file = 'train_data.csv'
+output_dir = "fhe"
 
 
 """DATA MANAGEMENT"""
@@ -36,24 +40,24 @@ x_train, x_test, y_train, y_test = train_test_split(
 # Dump test data into files
 if not os.path.exists(TEST_DIR):
     os.makedirs(TEST_DIR)
-    for i in range(0, len(x_test), TEST_SIZE):
-        file_path = os.path.join(TEST_DIR, f'{i}-{i+TEST_SIZE}.csv')
-        joblib.dump(x_test[i:TEST_SIZE+i], file_path)
+for i in range(0, len(x_test), TEST_SIZE):
+    file_path = os.path.join(TEST_DIR, f'{i}-{i+TEST_SIZE}.csv')
+    joblib.dump(x_test[i:TEST_SIZE+i], file_path)
 
 # Dump ground truth data into files
 if not os.path.exists(GT_DIR):
     os.makedirs(GT_DIR)
-    for i in range(0, len(y_test), TEST_SIZE):
-        file_path = os.path.join(GT_DIR, f'{i}-{i+TEST_SIZE}.csv')
-        joblib.dump(y_test[i:TEST_SIZE+i], file_path)
+for i in range(0, len(y_test), TEST_SIZE):
+    file_path = os.path.join(GT_DIR, f'{i}-{i+TEST_SIZE}.csv')
+    joblib.dump(y_test[i:TEST_SIZE+i], file_path)
 
 # Dump train data into file
-if not os.path.exists(train_data_file):
-    # Dump train data into external file
-    joblib.dump(x_train, train_data_file)
+# if not os.path.exists(train_data_file):
+#     # Dump train data into external file
+#     joblib.dump(x_train, train_data_file)
 
 
-"""MODEL"""
+"""SKLEARN MODEL"""
 
 # List of hyper parameters to tune
 param_grid = {
@@ -94,12 +98,39 @@ model = DecisionTreeClassifier(
 # Train model
 model.fit(x_train, y_train)
 
-try:
-    check_is_fitted(model)
-    print("model fitted.")
-except ValueError:
-    print("model not fitted.")
+# try:
+#     check_is_fitted(model)
+#     print("model fitted.")
+# except ValueError:
+#     print("model not fitted.")
 
+
+"""CONCRETE-ML CIRCUIT GENERATION"""
 # Save the model to a file if it doesn't exist
-if not os.path.exists(model_file):
-   joblib.dump(model, model_file)
+# if not os.path.exists(model_file):
+#    joblib.dump(model, model_file)
+       
+# Convert model into concrete model
+concrete_model = concrete.DecisionTreeClassifier.from_sklearn_model(model, n_bits=6)
+        
+# Generate circuit from trained model, using training data as shape
+fhe_circuit = concrete_model.compile(x_train)
+            
+# Generate developer object to manage circuit
+if not os.path.exists(output_dir):
+    os.mkdir(output_dir)
+fhemodel_dev = FHEModelDev(output_dir, concrete_model)
+
+# Save circuit generates two files:
+# Server.zip saves the model used by server for inference
+# Cleint.zip saves the specs for client
+# Both files are saved under specified directory
+fhemodel_dev.save()
+
+# Send model to cog server
+#copyfile(output_dir + "/server.zip", cog_dir + "/server.zip")
+
+
+
+
+
