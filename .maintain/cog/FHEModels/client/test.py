@@ -5,7 +5,7 @@ import subprocess
 import joblib
 from concrete.ml.deployment import FHEModelClient, FHEModelServer
 
-fhe_files_dir = "fhe"
+fhe_files_dir = "../fhe"
 
 class TestPredictionComparison(unittest.TestCase):
     def setUp(self):
