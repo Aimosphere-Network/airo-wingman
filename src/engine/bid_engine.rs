@@ -31,7 +31,7 @@ impl BidEngine {
 impl Engine for BidEngine {
     async fn process_chain_event(&mut self, event: ChainEvent) -> Result<()> {
         if let ChainEvent::OrderCreated { order_id, model_id } = event {
-            if let Some(model) = self.model_repo.get_by_model_id(model_id).await {
+            if let Some(model) = self.model_repo.get_by_model_id(&model_id).await {
                 tracing::info!(
                     "💸 Bidding {} on order {} for model {}",
                     model.details.price_per_request,

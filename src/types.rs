@@ -50,4 +50,5 @@ impl Model {
 pub struct ModelDetails {
     #[schema(value_type = u128)]
     pub price_per_request: Balance,
+    pub url: String,
 }

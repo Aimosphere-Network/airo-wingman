@@ -7,7 +7,7 @@ use subxt::config::Hasher as HasherT;
 pub trait ModelRepo {
     async fn list(&self) -> Vec<Model>;
     async fn contains(&self, name: &ModelName) -> bool;
-    async fn get_by_model_id(&self, id: ModelId) -> Option<Model>;
+    async fn get_by_model_id(&self, id: &ModelId) -> Option<Model>;
     async fn save(&self, model: Model);
     async fn remove(&self, name: &ModelName);
 }
@@ -28,8 +28,8 @@ impl ModelRepo for InMemoryModelRepo {
         self.db.contains_key(&id)
     }
 
-    async fn get_by_model_id(&self, id: ModelId) -> Option<Model> {
-        self.db.get(&id).map(|kv| kv.value().clone())
+    async fn get_by_model_id(&self, id: &ModelId) -> Option<Model> {
+        self.db.get(id).map(|kv| kv.value().clone())
     }
 
     async fn save(&self, model: Model) {
