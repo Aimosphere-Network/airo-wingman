@@ -16,7 +16,7 @@ use utoipa_swagger_ui::SwaggerUi;
 
 use crate::{
     data::ModelRepo,
-    types::{Model, ModelDetails, ModelId},
+    types::{Model, ModelDetails},
 };
 
 #[derive(OpenApi)]
@@ -58,6 +58,7 @@ impl HttpServer {
 
 mod models {
     use super::*;
+    use crate::types::ModelName;
 
     #[derive(Clone)]
     pub struct Deps {
@@ -80,7 +81,7 @@ mod models {
     pub fn routes() -> Router<Deps> {
         Router::new()
             .route("/models", get(list_models))
-            .route("/models/:id", put(save_model).delete(delete_model))
+            .route("/models/:name", put(save_model).delete(delete_model))
     }
 
     /// List all models.
@@ -92,31 +93,31 @@ mod models {
     }
 
     /// Save model. Either it's created or updated.
-    #[utoipa::path(put, path = "/models/{id}",
-        params(("id" = String, Path, description = "Model id")),
+    #[utoipa::path(put, path = "/models/{name}",
+        params(("name" = String, Path, description = "Model name")),
         request_body = ModelDetails,
         responses((status = 200, description = "Saved")))]
     async fn save_model(
-        Path(id): Path<ModelId>,
+        Path(name): Path<ModelName>,
         State(deps): State<Deps>,
         Json(details): Json<ModelDetails>,
     ) {
-        let model = Model { id, details };
+        let model = Model::new(name, details);
         deps.model_repo.save(model).await;
     }
 
     /// Delete model.
-    #[utoipa::path(delete, path = "/models/{id}",
-        params(("id" = String, Path, description = "Model id")),
+    #[utoipa::path(delete, path = "/models/{name}",
+        params(("name" = String, Path, description = "Model name")),
         responses(
             (status = 200, description = "Deleted"),
             (status = 404, description = "Not found")))]
     async fn delete_model(
-        Path(id): Path<ModelId>,
+        Path(name): Path<ModelName>,
         State(deps): State<Deps>,
     ) -> Result<StatusCode, StatusCode> {
-        if deps.model_repo.contains(&id).await {
-            deps.model_repo.remove(&id).await;
+        if deps.model_repo.contains(&name).await {
+            deps.model_repo.remove(&name).await;
             Ok(StatusCode::OK)
         } else {
             Err(StatusCode::NOT_FOUND)

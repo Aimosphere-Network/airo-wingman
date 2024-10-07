@@ -4,12 +4,16 @@ pub use std::result::Result as stdResult;
 use primitive_types::H256;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use subxt::config::{substrate::BlakeTwo256, Hasher as HasherT};
 use utoipa::ToSchema;
 
 pub type Result<T> = stdResult<T, Box<dyn Error + Send + Sync>>;
 
+pub type Hasher = BlakeTwo256;
+
 pub type Balance = u128;
-pub type ModelId = String;
+pub type ModelName = String;
+pub type ModelId = H256;
 pub type OrderId = u32;
 pub type ContentId = H256;
 pub type AgreementId = OrderId;
@@ -26,11 +30,20 @@ pub struct ExecutionResult {
     pub completed_at: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, ToSchema)]
+#[derive(Clone, Serialize, Deserialize, ToSchema)]
 pub struct Model {
-    #[schema(value_type = String)]
+    #[schema(value_type = [u8; 32])]
     pub id: ModelId,
+    #[schema(value_type = String)]
+    pub name: ModelName,
     pub details: ModelDetails,
+}
+
+impl Model {
+    pub fn new(name: ModelName, details: ModelDetails) -> Self {
+        let id = Hasher::hash(name.as_bytes());
+        Self { id, name, details }
+    }
 }
 
 #[derive(Clone, Serialize, Deserialize, ToSchema)]
