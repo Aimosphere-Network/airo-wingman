@@ -18,7 +18,9 @@ use thiserror::Error;
 use tokio::sync::broadcast::Sender;
 use tokio_util::sync::CancellationToken;
 
-use crate::types::{AgreementDetails, AgreementId, Balance, ContentId, ModelId, OrderId, Result};
+use crate::types::{
+    AgreementDetails, AgreementId, Balance, ContentId, Hasher, ModelId, OrderId, Result,
+};
 
 #[subxt::subxt(runtime_metadata_path = "metadata.scale")]
 mod airo {
@@ -26,17 +28,9 @@ mod airo {
 
     use crate::types::{AgreementDetails, ModelId};
 
-    type RuntimeModelId = runtime_types::bounded_collections::bounded_vec::BoundedVec<u8>;
-
-    impl From<RuntimeModelId> for ModelId {
-        fn from(value: RuntimeModelId) -> Self {
-            String::from_utf8_lossy(&value.0).into_owned()
-        }
-    }
-
     impl From<RuntimeAgreementDetails> for AgreementDetails {
         fn from(value: RuntimeAgreementDetails) -> Self {
-            Self { model_id: value.model_id.into() }
+            Self { model_id: value.model_id }
         }
     }
 }
@@ -44,7 +38,6 @@ mod airo {
 type AccountId = AccountId32;
 type Block = subxt::blocks::Block<RuntimeConfig, Client>;
 type Client = OnlineClient<RuntimeConfig>;
-type Hasher = BlakeTwo256;
 
 enum RuntimeConfig {}
 impl Config for RuntimeConfig {
@@ -162,7 +155,7 @@ async fn process_block(
             (OrderCreated::PALLET, OrderCreated::EVENT) => {
                 if let Some(event) = event.as_event::<OrderCreated>()? {
                     let order_id = event.order_id;
-                    let model_id = event.model_id.into();
+                    let model_id = event.model_id;
                     sender.send(ChainEvent::OrderCreated { order_id, model_id })?;
                 }
             },
