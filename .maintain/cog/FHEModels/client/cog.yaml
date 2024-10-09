@@ -31,9 +31,6 @@ build:
   # run:
   #   - "echo env is ready!"
   #   - "echo another command if needed"
-  run:
-    ports:
-      - "5001:5000"
 
 # train
 # train: "train.py:train"
