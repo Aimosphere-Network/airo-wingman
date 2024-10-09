@@ -1,4 +1,3 @@
-import joblib
 import os
 import subprocess
 import numpy as np
@@ -38,7 +37,7 @@ class Predictor(BasePredictor):
         """Input encryption with evaluation key"""
         
         # Load features from file
-        input_data = joblib.load(features)
+        with open(features, "rb") as f: input_data = f.read()
 
         # Encrypt features individually
         enc_inputs = []
@@ -49,7 +48,7 @@ class Predictor(BasePredictor):
         # Export encrypted features to file
         base_name, ext = os.path.splitext(features) 
         enc_inputs_file = f"{base_name}{"_enc"}{ext}"
-        joblib.dump(enc_inputs, enc_inputs_file)
+        with open(enc_inputs_file, "wb") as f: f.write(enc_inputs)
 
         """Send request"""
 
@@ -76,7 +75,7 @@ class Predictor(BasePredictor):
         enc_output_file = subprocess.run(scp_command, capture_output=True, text=True)
 
         # Load results from file
-        enc_output = joblib.load(enc_output_file)
+        with open(enc_output_file, "rb") as f: enc_output = f.read()
 
         """Output decryption with evaluation key"""
 
