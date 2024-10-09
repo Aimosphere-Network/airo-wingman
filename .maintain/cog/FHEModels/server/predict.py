@@ -36,7 +36,6 @@ class Predictor(BasePredictor):
         # Export encrypted results
         base_name, ext = os.path.splitext(enc_input_file) 
         enc_output_file = f"{base_name}{"_out"}{ext}"
-        with open(enc_output_file, "wb") as f:
-             f.write(enc_outputs)
+        with open(enc_output_file, "wb") as f: f.write(enc_outputs)
 
 
