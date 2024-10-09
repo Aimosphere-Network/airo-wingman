@@ -1,10 +1,11 @@
+import os
 from cog import BasePredictor, Input
 from concrete.ml.deployment import FHEModelServer
 
-# Abstraction of message passing
+# Suppose client has already interacted with dev to get server.zip 
+# In real world this file would be copied to server directory once before
 server_fhe_file_dir = "../fhe"
 
-enc_output_file = "encrypted_prediction.enc"
 
 class Predictor(BasePredictor):
     def setup(self):
@@ -32,7 +33,9 @@ class Predictor(BasePredictor):
             e_o = self.fhe_circuit.run(e_i, eval_keys)
             enc_outputs.append(e_o)
 
-        # Dump results
+        # Export encrypted results
+        base_name, ext = os.path.splitext(enc_input_file) 
+        enc_output_file = f"{base_name}{"_out"}{ext}"
         with open(enc_output_file, "wb") as f:
              f.write(enc_outputs)
 
