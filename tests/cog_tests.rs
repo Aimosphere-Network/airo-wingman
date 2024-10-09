@@ -1,10 +1,7 @@
-use std::{collections::HashMap, sync::OnceLock, thread::sleep, time::Duration};
-
-use serde_json::Value;
-
+use crate::common::{build_and_run, encode_file};
 use airo_wingman::cog::{Connector, Health};
-
-use crate::common::{build_and_run, cmd, encode_file};
+use serde_json::Value;
+use std::{collections::HashMap, sync::OnceLock, thread::sleep, time::Duration};
 
 mod common;
 
@@ -20,16 +17,11 @@ static SETUP: OnceLock<ModelPorts> = OnceLock::new();
 fn setup_models() -> ModelPorts {
     *SETUP.get_or_init(|| {
         println!("Setting up tests");
-        cmd(
-            "curl",
-            ["-O", "https://storage.googleapis.com/tensorflow/keras-applications/resnet/resnet50_weights_tf_dim_ordering_tf_kernels.h5"],
-            Some(".maintain/cog/resnet"),
-        );
         let ports = ModelPorts {
             hello_world: build_and_run("hello-world", None),
             resnet: build_and_run("resnet", None),
         };
-        sleep(Duration::from_secs(10));
+        sleep(Duration::from_secs(30));
         ports
     })
 }
@@ -74,7 +66,7 @@ async fn test_predict_hello_world() {
 async fn test_predict_resnet() {
     let model_ports = setup_models();
     let connector = Connector::new(&format!("http://localhost:{}", model_ports.resnet)).unwrap();
-    let input = HashMap::from([("image".to_owned(), encode_file(".maintain/cog/resnet/cat.png"))]);
+    let input = HashMap::from([("image".to_owned(), encode_file("tests/cat.png"))]);
     let prediction = connector.predict::<_, Value>(input).await.unwrap();
     assert!(prediction.output.is_some());
 }
