@@ -47,7 +47,7 @@ class Predictor(BasePredictor):
 
         # Export encrypted features to file
         base_name, ext = os.path.splitext(features) 
-        enc_inputs_file = f"{base_name}{"_enc"}{ext}"
+        enc_inputs_file = f"{base_name}_enc{ext}"
         with open(enc_inputs_file, "wb") as f: f.write(enc_inputs)
 
         """Send request"""
