@@ -3,8 +3,8 @@ Process from getting data, to training in plain-text, then converting into concr
 and saving circuit with server and client information separately
 """
 import numpy
-import joblib
 import os
+import joblib
 from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.tree import DecisionTreeClassifier
@@ -50,11 +50,6 @@ if not os.path.exists(GT_DIR):
 for i in range(0, len(y_test), TEST_SIZE):
     file_path = os.path.join(GT_DIR, f'{i}-{i+TEST_SIZE}.csv')
     joblib.dump(y_test[i:TEST_SIZE+i], file_path)
-
-# Dump train data into file
-# if not os.path.exists(train_data_file):
-#     # Dump train data into external file
-#     joblib.dump(x_train, train_data_file)
 
 
 """SKLEARN MODEL"""
@@ -111,7 +106,7 @@ model.fit(x_train, y_train)
 #    joblib.dump(model, model_file)
        
 # Convert model into concrete model
-concrete_model = concrete.DecisionTreeClassifier.from_sklearn_model(model, n_bits=6)
+concrete_model = concrete.DecisionTreeClassifier.from_sklearn_model(model)
         
 # Generate circuit from trained model, using training data as shape
 fhe_circuit = concrete_model.compile(x_train)
@@ -127,8 +122,6 @@ fhemodel_dev = FHEModelDev(output_dir, concrete_model)
 # Both files are saved under specified directory
 fhemodel_dev.save()
 
-# Send model to cog server
-#copyfile(output_dir + "/server.zip", cog_dir + "/server.zip")
 
 
 
