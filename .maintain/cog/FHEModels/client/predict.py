@@ -47,33 +47,34 @@ class Predictor(BasePredictor):
         enc_inputs_file = f"{base_name}_enc{ext}"
         with open(enc_inputs_file, "wb") as f: f.write(enc_inputs)
 
-        """Send request"""
+        # """Send request"""
 
-        # Cog command to execute prediction on server
-        curl_command = ['curl', f'http://{server_address}/predictions', '-i', '-X', 'POST', '-H', 'Content-Type: application/json', 
-                        '-d', '{"input": {"eval_key_file": {keys_file}, "enc_input_file": {enc_inputs_file}}']
+        # # Cog command to execute prediction on server
+        # curl_command = ['curl', f'http://{server_address}/predictions', '-i', '-X', 'POST', '-H', 'Content-Type: application/json', 
+        #                 '-d', '{"input": {"eval_key_file": {keys_file}, "enc_input_file": {enc_inputs_file}}']
 
-        # Execute curl command
-        message = subprocess.run(curl_command, capture_output=True, text=True)
+        # # Execute curl command
+        # message = subprocess.run(curl_command, capture_output=True, text=True)
 
-        # Remove intermediary encrypted input file
-        os.remove(enc_inputs_file)
+        # # Remove intermediary encrypted input file
+        # os.remove(enc_inputs_file)
 
-        """Receive response"""
+        # """Receive response"""
 
-        # Response is path for results file in server
-        enc_output_file = message.stdout
+        # # Response is path for results file in server
+        # enc_output_file = message.stdout
 
-        # Download output file from the server
-        download_command = [
-                'curl', '-o', 'output.csv', f'http://server:5001{enc_output_file}']
+        # # Download output file from the server
+        # download_command = [
+        #         'curl', '-o', 'output.csv', f'http://server:5001{enc_output_file}']
 
-        subprocess.run(download_command)
+        # subprocess.run(download_command)
+
+
+        """Output decryption with evaluation key"""
 
         # Load results from file
         with open(enc_output_file, "rb") as f: enc_output = f.read()
-
-        """Output decryption with evaluation key"""
 
         # Decrypt results individually
         output_data = []
