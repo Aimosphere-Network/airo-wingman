@@ -2,4 +2,7 @@ argparse
 numpy
 joblib
 concrete-ml
+pydantic
+fastapi
+typing
 
