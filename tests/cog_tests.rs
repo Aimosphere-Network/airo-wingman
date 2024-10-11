@@ -12,6 +12,7 @@ struct ModelPorts {
     hello_world: Port,
     resnet: Port,
     health_client: Port,
+    health_server: Port,
 }
 
 static SETUP: OnceLock<ModelPorts> = OnceLock::new();
@@ -22,6 +23,7 @@ fn setup_models() -> ModelPorts {
             hello_world: build_and_run("hello-world", None),
             resnet: build_and_run("resnet", None),
             health_client: build_and_run("health-client", None),
+            health_server: build_and_run("health-server", None),
         };
         sleep(Duration::from_secs(30));
         ports
@@ -74,12 +76,33 @@ async fn test_predict_resnet() {
 }
 
 #[tokio::test]
-async fn test_enc_health() {
+async fn test_predict_health() {
     let model_ports = setup_models();
-    let connector =
+    let client_connector =
         Connector::new(&format!("http://localhost:{}", model_ports.health_client)).unwrap();
-    let input = HashMap::from([("symptoms".to_owned(), "1.1.1.1.1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0".to_owned())]);
-    let prediction = connector.predict::<_, Value>(input).await.unwrap();
-    println!("{prediction:?}");
-    assert!(prediction.output.is_some());
+    let symptoms = "1.1.1.1.1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0";
+    let input = json!({
+        "encrypt": true,
+        "input": symptoms
+    });
+    let client_encrypt = client_connector.predict::<_, Value>(input).await.unwrap();
+    assert!(client_encrypt.output.is_some());
+    // fs::write("tests/client_encrypt.json", client_encrypt.output.unwrap()).unwrap();
+
+    let server_connector =
+        Connector::new(&format!("http://localhost:{}", model_ports.health_server)).unwrap();
+    let server_prediction =
+        server_connector.predict::<_, Value>(client_encrypt.output).await.unwrap();
+    assert!(server_prediction.output.is_some());
+    // std::fs::write(
+    //     "tests/server_prediction.json",
+    //     serde_json::to_string(&server_prediction.output.unwrap()).unwrap(),
+    // )
+    // .unwrap();
+
+    let client_decrypt = client_connector
+        .predict::<_, Value>(json!({"encrypt": false, "input": server_prediction.output.unwrap()}))
+        .await
+        .unwrap();
+    assert!(client_decrypt.output.is_some());
 }
