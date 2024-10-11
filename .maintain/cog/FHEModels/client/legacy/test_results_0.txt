@@ -1,0 +1,426 @@
+100-110.csv
+FHE result: 
+[0 1 0 1 1 0 0 1 1 0]
+Ground truth: 
+[0 1 0 1 1 0 0 1 1 1]
+Matches: 9 | Success Percentage: 90.00%
+630-640.csv
+FHE result: 
+[1 1 0 0 0 1 0 1 0 0]
+Ground truth: 
+[1 1 0 0 0 1 0 1 0 0]
+Matches: 10 | Success Percentage: 100.00%
+130-140.csv
+FHE result: 
+[0 1 1 0 0 0 1 0 0 1]
+Ground truth: 
+[0 1 1 0 0 0 1 0 1 1]
+Matches: 9 | Success Percentage: 90.00%
+600-610.csv
+FHE result: 
+[1 1 0 0 0 1 0 1 0 0]
+Ground truth: 
+[1 1 1 0 1 1 0 1 0 0]
+Matches: 8 | Success Percentage: 80.00%
+550-560.csv
+FHE result: 
+[0 0 1 0 1 0 0 0 0 0]
+Ground truth: 
+[0 0 1 0 1 0 0 0 0 0]
+Matches: 10 | Success Percentage: 100.00%
+180-190.csv
+FHE result: 
+[0 0 0 0 1 0 0 0 0 0]
+Ground truth: 
+[0 0 0 0 1 0 0 0 0 0]
+Matches: 10 | Success Percentage: 100.00%
+350-360.csv
+FHE result: 
+[0 0 0 0 0 1 0 1 0 1]
+Ground truth: 
+[0 0 0 0 0 1 0 1 1 1]
+Matches: 9 | Success Percentage: 90.00%
+40-50.csv
+FHE result: 
+[1 0 0 0 1 1 1 0 0 1]
+Ground truth: 
+[1 0 0 0 1 1 1 0 1 1]
+Matches: 9 | Success Percentage: 90.00%
+660-670.csv
+FHE result: 
+[0 1 1 0 0 0 1 1 0 0]
+Ground truth: 
+[0 1 1 0 0 0 1 1 0 0]
+Matches: 10 | Success Percentage: 100.00%
+160-170.csv
+FHE result: 
+[1 0 1 0 1 0 1 0 0 1]
+Ground truth: 
+[1 1 1 0 1 0 1 1 0 1]
+Matches: 8 | Success Percentage: 80.00%
+680-690.csv
+FHE result: 
+[0 1 1 1 0 0 0 0 0 1]
+Ground truth: 
+[0 1 1 1 0 0 0 0 1 1]
+Matches: 9 | Success Percentage: 90.00%
+450-460.csv
+FHE result: 
+[0 0 0 1 0 0 1 1 1 1]
+Ground truth: 
+[0 0 0 1 0 0 1 1 1 1]
+Matches: 10 | Success Percentage: 100.00%
+90-100.csv
+FHE result: 
+[1 1 0 1 0 0 1 0 1 1]
+Ground truth: 
+[1 1 0 1 0 0 1 0 1 1]
+Matches: 10 | Success Percentage: 100.00%
+250-260.csv
+FHE result: 
+[0 0 0 0 0 0 0 1 0 0]
+Ground truth: 
+[0 1 0 0 0 1 1 1 1 0]
+Matches: 6 | Success Percentage: 60.00%
+490-500.csv
+FHE result: 
+[1 1 0 0 1 1 0 1 0 0]
+Ground truth: 
+[1 1 1 0 1 0 0 1 0 0]
+Matches: 8 | Success Percentage: 80.00%
+370-380.csv
+FHE result: 
+[1 1 0 1 0 0 0 0 1 0]
+Ground truth: 
+[1 1 0 1 0 0 0 0 1 0]
+Matches: 10 | Success Percentage: 100.00%
+290-300.csv
+FHE result: 
+[0 1 0 0 1 1 0 0 0 0]
+Ground truth: 
+[0 1 0 0 1 1 0 0 0 0]
+Matches: 10 | Success Percentage: 100.00%
+570-580.csv
+FHE result: 
+[1 0 0 1 0 1 1 1 1 0]
+Ground truth: 
+[1 0 0 1 0 1 1 1 1 0]
+Matches: 10 | Success Percentage: 100.00%
+590-600.csv
+FHE result: 
+[0 1 1 0 0 1 0 0 0 1]
+Ground truth: 
+[0 1 1 1 0 1 0 0 0 1]
+Matches: 9 | Success Percentage: 90.00%
+140-150.csv
+FHE result: 
+[1 1 0 0 1 1 0 0 0 1]
+Ground truth: 
+[1 1 0 0 1 1 0 0 1 1]
+Matches: 9 | Success Percentage: 90.00%
+640-650.csv
+FHE result: 
+[0 0 0 0 1 0 1 0 0 0]
+Ground truth: 
+[0 0 0 0 1 0 1 0 0 1]
+Matches: 9 | Success Percentage: 90.00%
+70-80.csv
+FHE result: 
+[0 0 0 1 1 1 0 0 0 1]
+Ground truth: 
+[0 0 0 1 1 0 0 0 0 1]
+Matches: 9 | Success Percentage: 90.00%
+270-280.csv
+FHE result: 
+[1 0 0 0 0 0 1 0 1 0]
+Ground truth: 
+[1 0 0 0 0 0 1 0 1 0]
+Matches: 10 | Success Percentage: 100.00%
+470-480.csv
+FHE result: 
+[1 0 0 0 0 1 0 0 0 0]
+Ground truth: 
+[0 0 0 0 0 0 1 0 0 0]
+Matches: 7 | Success Percentage: 70.00%
+620-630.csv
+FHE result: 
+[1 1 0 0 0 0 1 1 0 0]
+Ground truth: 
+[1 1 0 1 0 0 1 1 0 1]
+Matches: 8 | Success Percentage: 80.00%
+310-320.csv
+FHE result: 
+[1 0 1 1 0 0 0 0 1 0]
+Ground truth: 
+[1 0 1 1 0 1 0 1 1 1]
+Matches: 7 | Success Percentage: 70.00%
+510-520.csv
+FHE result: 
+[1 1 1 1 0 1 1 0 1 1]
+Ground truth: 
+[1 1 1 1 0 1 1 0 0 1]
+Matches: 9 | Success Percentage: 90.00%
+210-220.csv
+FHE result: 
+[0 1 0 0 0 0 0 0 0 0]
+Ground truth: 
+[0 1 0 0 0 0 0 0 0 0]
+Matches: 10 | Success Percentage: 100.00%
+410-420.csv
+FHE result: 
+[0 0 1 0 0 1 1 0 0 0]
+Ground truth: 
+[0 1 1 0 0 1 0 0 0 0]
+Matches: 8 | Success Percentage: 80.00%
+390-400.csv
+FHE result: 
+[0 0 1 1 0 1 0 1 0 0]
+Ground truth: 
+[0 0 1 1 0 1 0 1 0 0]
+Matches: 10 | Success Percentage: 100.00%
+120-130.csv
+FHE result: 
+[0 0 1 0 1 0 0 0 1 0]
+Ground truth: 
+[1 0 1 0 1 0 0 0 1 0]
+Matches: 9 | Success Percentage: 90.00%
+330-340.csv
+FHE result: 
+[0 0 1 0 0 1 0 1 0 0]
+Ground truth: 
+[0 0 1 0 0 1 0 1 1 0]
+Matches: 9 | Success Percentage: 90.00%
+60-70.csv
+FHE result: 
+[1 0 0 1 1 0 0 0 1 0]
+Ground truth: 
+[1 0 1 1 1 0 0 0 1 0]
+Matches: 9 | Success Percentage: 90.00%
+200-210.csv
+FHE result: 
+[0 0 1 0 0 1 0 0 0 1]
+Ground truth: 
+[0 0 0 0 0 1 0 0 0 1]
+Matches: 9 | Success Percentage: 90.00%
+530-540.csv
+FHE result: 
+[0 0 0 1 1 0 1 1 1 0]
+Ground truth: 
+[0 0 0 1 1 0 1 1 1 0]
+Matches: 10 | Success Percentage: 100.00%
+400-410.csv
+FHE result: 
+[1 0 0 0 1 1 0 1 1 1]
+Ground truth: 
+[1 0 0 0 1 1 0 1 1 1]
+Matches: 10 | Success Percentage: 100.00%
+30-40.csv
+FHE result: 
+[1 1 0 0 0 0 1 1 0 1]
+Ground truth: 
+[1 1 0 0 0 0 1 1 0 1]
+Matches: 10 | Success Percentage: 100.00%
+300-310.csv
+FHE result: 
+[0 1 0 0 0 0 1 1 1 0]
+Ground truth: 
+[0 1 0 0 0 0 1 1 1 0]
+Matches: 10 | Success Percentage: 100.00%
+230-240.csv
+FHE result: 
+[0 0 0 0 0 0 0 0 1 1]
+Ground truth: 
+[0 0 0 0 1 0 0 0 1 1]
+Matches: 9 | Success Percentage: 90.00%
+500-510.csv
+FHE result: 
+[1 0 1 1 1 1 1 1 1 1]
+Ground truth: 
+[0 0 1 1 1 1 1 1 1 1]
+Matches: 9 | Success Percentage: 90.00%
+430-440.csv
+FHE result: 
+[0 1 0 0 1 0 0 0 1 0]
+Ground truth: 
+[1 1 0 0 1 0 0 0 1 0]
+Matches: 9 | Success Percentage: 90.00%
+0-10.csv
+FHE result: 
+[0 0 0 1 0 0 0 0 0 0]
+Ground truth: 
+[0 0 0 1 0 1 0 0 0 0]
+Matches: 9 | Success Percentage: 90.00%
+480-490.csv
+FHE result: 
+[1 0 0 1 1 0 0 0 0 0]
+Ground truth: 
+[1 0 1 1 1 0 0 0 0 0]
+Matches: 9 | Success Percentage: 90.00%
+650-660.csv
+FHE result: 
+[1 0 0 1 0 0 0 1 0 1]
+Ground truth: 
+[1 1 0 1 0 0 0 1 0 1]
+Matches: 9 | Success Percentage: 90.00%
+360-370.csv
+FHE result: 
+[0 1 1 0 0 0 0 0 1 0]
+Ground truth: 
+[0 1 1 0 0 0 0 0 1 0]
+Matches: 10 | Success Percentage: 100.00%
+560-570.csv
+FHE result: 
+[1 0 0 0 0 1 1 0 0 1]
+Ground truth: 
+[1 0 1 0 0 1 1 0 0 1]
+Matches: 9 | Success Percentage: 90.00%
+280-290.csv
+FHE result: 
+[1 1 0 0 1 0 0 0 0 1]
+Ground truth: 
+[0 1 0 0 1 0 0 1 0 1]
+Matches: 8 | Success Percentage: 80.00%
+580-590.csv
+FHE result: 
+[0 0 1 0 0 0 0 1 0 1]
+Ground truth: 
+[0 0 1 0 1 0 0 1 0 1]
+Matches: 9 | Success Percentage: 90.00%
+260-270.csv
+FHE result: 
+[1 0 1 0 1 1 1 0 0 0]
+Ground truth: 
+[1 0 1 0 1 1 1 0 0 0]
+Matches: 10 | Success Percentage: 100.00%
+460-470.csv
+FHE result: 
+[1 1 0 0 0 0 1 1 1 1]
+Ground truth: 
+[1 1 0 0 0 0 1 1 1 1]
+Matches: 10 | Success Percentage: 100.00%
+10-20.csv
+FHE result: 
+[0 0 0 1 0 0 1 1 1 0]
+Ground truth: 
+[0 0 0 1 1 0 1 1 1 0]
+Matches: 9 | Success Percentage: 90.00%
+380-390.csv
+FHE result: 
+[1 0 1 0 1 0 1 0 0 0]
+Ground truth: 
+[1 1 1 0 1 0 1 0 0 1]
+Matches: 8 | Success Percentage: 80.00%
+150-160.csv
+FHE result: 
+[0 1 1 0 0 1 0 0 0 0]
+Ground truth: 
+[0 1 1 1 0 1 1 1 1 0]
+Matches: 6 | Success Percentage: 60.00%
+440-450.csv
+FHE result: 
+[0 0 1 0 0 1 0 0 0 1]
+Ground truth: 
+[0 0 1 1 0 1 0 0 0 1]
+Matches: 9 | Success Percentage: 90.00%
+240-250.csv
+FHE result: 
+[0 1 1 0 0 0 0 1 0 0]
+Ground truth: 
+[0 1 1 1 0 0 0 1 0 0]
+Matches: 9 | Success Percentage: 90.00%
+670-680.csv
+FHE result: 
+[1 1 0 1 0 1 0 1 0 0]
+Ground truth: 
+[1 1 0 1 0 1 0 1 0 1]
+Matches: 9 | Success Percentage: 90.00%
+690-700.csv
+FHE result: 
+[0]
+Ground truth: 
+[0]
+Matches: 1 | Success Percentage: 100.00%
+80-90.csv
+FHE result: 
+[0 0 0 0 0 0 1 1 0 0]
+Ground truth: 
+[0 0 0 0 0 0 1 1 1 0]
+Matches: 9 | Success Percentage: 90.00%
+170-180.csv
+FHE result: 
+[0 0 0 0 1 0 1 0 0 1]
+Ground truth: 
+[0 0 1 0 1 0 1 0 0 1]
+Matches: 9 | Success Percentage: 90.00%
+20-30.csv
+FHE result: 
+[0 1 1 0 1 0 1 0 1 1]
+Ground truth: 
+[0 1 1 0 1 0 1 0 1 1]
+Matches: 10 | Success Percentage: 100.00%
+190-200.csv
+FHE result: 
+[1 0 1 0 0 0 0 0 0 0]
+Ground truth: 
+[1 0 1 0 1 0 0 0 0 0]
+Matches: 9 | Success Percentage: 90.00%
+540-550.csv
+FHE result: 
+[0 0 0 0 1 1 1 1 1 1]
+Ground truth: 
+[1 0 0 0 1 1 1 1 1 1]
+Matches: 9 | Success Percentage: 90.00%
+340-350.csv
+FHE result: 
+[0 0 0 0 1 0 0 0 1 1]
+Ground truth: 
+[0 0 0 0 0 0 0 0 1 1]
+Matches: 9 | Success Percentage: 90.00%
+520-530.csv
+FHE result: 
+[0 1 0 0 1 0 0 0 1 0]
+Ground truth: 
+[0 1 0 0 1 0 0 0 1 0]
+Matches: 10 | Success Percentage: 100.00%
+320-330.csv
+FHE result: 
+[0 0 0 0 0 1 1 1 1 0]
+Ground truth: 
+[0 0 0 0 0 1 1 1 1 0]
+Matches: 10 | Success Percentage: 100.00%
+50-60.csv
+FHE result: 
+[1 0 0 1 0 0 0 0 0 0]
+Ground truth: 
+[1 0 0 1 0 0 0 0 0 0]
+Matches: 10 | Success Percentage: 100.00%
+610-620.csv
+.
+----------------------------------------------------------------------
+Ran 1 test in 5090.421s
+
+OK
+FHE result: 
+[1 0 1 0 1 0 0 0 0 1]
+Ground truth: 
+[1 0 0 0 1 0 0 0 0 1]
+Matches: 9 | Success Percentage: 90.00%
+110-120.csv
+FHE result: 
+[1 1 1 0 1 1 1 0 0 0]
+Ground truth: 
+[1 1 1 0 1 1 0 0 0 0]
+Matches: 9 | Success Percentage: 90.00%
+420-430.csv
+FHE result: 
+[0 1 0 0 0 0 1 0 0 0]
+Ground truth: 
+[0 1 0 0 0 0 1 1 0 1]
+Matches: 8 | Success Percentage: 80.00%
+220-230.csv
+FHE result: 
+[0 1 1 0 1 0 1 0 0 0]
+Ground truth: 
+[0 1 1 1 1 0 1 0 0 0]
+Matches: 9 | Success Percentage: 90.00%
+Overall Success Percentage: 90.74%

@@ -300,10 +300,10 @@ Ground truth:
 Matches: 10 | Success Percentage: 100.00%
 10-20.csv
 FHE result: 
-[0 0 0 1 0 0 1 1 1 0]
+[0 0 0 1 1 0 1 1 1 0]
 Ground truth: 
 [0 0 0 1 1 0 1 1 1 0]
-Matches: 9 | Success Percentage: 90.00%
+Matches: 10 | Success Percentage: 100.00%
 380-390.csv
 FHE result: 
 [1 0 1 0 1 0 1 0 0 0]
@@ -395,11 +395,6 @@ Ground truth:
 [1 0 0 1 0 0 0 0 0 0]
 Matches: 10 | Success Percentage: 100.00%
 610-620.csv
-.
-----------------------------------------------------------------------
-Ran 1 test in 5090.421s
-
-OK
 FHE result: 
 [1 0 1 0 1 0 0 0 0 1]
 Ground truth: 
@@ -423,4 +418,4 @@ FHE result:
 Ground truth: 
 [0 1 1 1 1 0 1 0 0 0]
 Matches: 9 | Success Percentage: 90.00%
-Overall Success Percentage: 90.74%
+Overall Success Percentage: 90.88%

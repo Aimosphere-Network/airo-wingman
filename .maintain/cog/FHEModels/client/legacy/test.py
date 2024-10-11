@@ -1,11 +1,9 @@
 import unittest
 import numpy as np
 import os
-import subprocess
 import joblib
 from concrete.ml.deployment import FHEModelClient, FHEModelServer
 
-fhe_files_dir = "../fhe"
 
 class TestPredictionComparison(unittest.TestCase):
     def setUp(self):
@@ -25,7 +23,7 @@ class TestPredictionComparison(unittest.TestCase):
                 """CLIENT"""
 
                 # Create client object to manage keys
-                client = FHEModelClient(fhe_files_dir, key_dir="keys")
+                client = FHEModelClient("")
 
                 # Create private and evaluation keys
                 eval_key = client.get_serialized_evaluation_keys()
@@ -40,15 +38,15 @@ class TestPredictionComparison(unittest.TestCase):
                     enc_inputs.append(e_i)
                 
                 # Export encrypted features
-                enc_inputs_file = os.path.join(self.enc_test_data_dir, file_name)
-                if not os.path.exists(self.enc_test_data_dir): 
-                    os.mkdir(self.enc_test_data_dir)
-                joblib.dump(enc_inputs, enc_inputs_file)
+                # enc_inputs_file = os.path.join(self.enc_test_data_dir, file_name)
+                # if not os.path.exists(self.enc_test_data_dir): 
+                #     os.mkdir(self.enc_test_data_dir)
+                # joblib.dump(enc_inputs, enc_inputs_file)
 
                 """SERVER: SIMULATE WHAT COG DOES"""
 
                 # Create server object to manage circuit
-                server = FHEModelServer(fhe_files_dir)
+                server = FHEModelServer("")
 
                 # Run circuit
                 enc_outputs = []

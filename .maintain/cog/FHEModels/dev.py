@@ -15,7 +15,7 @@ import concrete.ml.sklearn as concrete
 
 
 OPEN_ML_DATASET = 44
-TEST_SIZE = 10
+TEST_SIZE = 1
 TEST_DIR = 'test_data'
 GT_DIR = 'ground_truths'
 
@@ -41,14 +41,14 @@ x_train, x_test, y_train, y_test = train_test_split(
 if not os.path.exists(TEST_DIR):
     os.makedirs(TEST_DIR)
 for i in range(0, len(x_test), TEST_SIZE):
-    file_path = os.path.join(TEST_DIR, f'{i}-{i+TEST_SIZE}.csv')
+    file_path = os.path.join(TEST_DIR, f'{i}.csv')
     joblib.dump(x_test[i:TEST_SIZE+i], file_path)
 
 # Dump ground truth data into files
 if not os.path.exists(GT_DIR):
     os.makedirs(GT_DIR)
 for i in range(0, len(y_test), TEST_SIZE):
-    file_path = os.path.join(GT_DIR, f'{i}-{i+TEST_SIZE}.csv')
+    file_path = os.path.join(GT_DIR, f'{i}.csv')
     joblib.dump(y_test[i:TEST_SIZE+i], file_path)
 
 

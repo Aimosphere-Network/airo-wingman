@@ -59,3 +59,6 @@ python3 client.py -i test_data/0-10.enc -f decrypt
 _____________________________________________________________________________________________________________
 helper:
     docker rmi -f $(docker images -a -q)
+
+    cd client/legacy
+    python3 test.py > test_results.txt
