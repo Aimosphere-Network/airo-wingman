@@ -99,7 +99,13 @@ async fn process_request(
         tracing::warn!("⚠️ Content {content_id} not found");
         return Ok(());
     };
-    let result = predict(model_url, &content).await?;
+    let result = match predict(model_url, &content).await {
+        Ok(res) => res,
+        Err(e) => {
+            tracing::error!("⚠️ Cog prediction failed: {e}. Request ignored.");
+            return Ok(());
+        },
+    };
     tracing::info!("🛠️ Request {request_index} on agreement {agreement_id} processed");
     let content_id = protocol_client.hash_upload(result).await?;
     protocol_client.response_create(agreement_id, request_index, content_id).await?;
