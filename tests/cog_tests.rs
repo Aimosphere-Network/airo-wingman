@@ -87,7 +87,11 @@ async fn test_predict_health() {
     });
     let client_encrypt = client_connector.predict::<_, Value>(input).await.unwrap();
     assert!(client_encrypt.output.is_some());
-    // fs::write("tests/client_encrypt.json", client_encrypt.output.unwrap()).unwrap();
+    // std::fs::write(
+    //     "tests/client_encrypt.json",
+    //     serde_json::to_string(client_encrypt.output.as_ref().unwrap()).unwrap(),
+    // )
+    // .unwrap();
 
     let server_connector =
         Connector::new(&format!("http://localhost:{}", model_ports.health_server)).unwrap();
@@ -96,7 +100,7 @@ async fn test_predict_health() {
     assert!(server_prediction.output.is_some());
     // std::fs::write(
     //     "tests/server_prediction.json",
-    //     serde_json::to_string(&server_prediction.output.unwrap()).unwrap(),
+    //     serde_json::to_string(&server_prediction.output.as_ref().unwrap()).unwrap(),
     // )
     // .unwrap();
 
