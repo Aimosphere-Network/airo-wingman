@@ -1,8 +1,6 @@
-argparse
 numpy
 joblib
-concrete-ml
-pydantic
+concrete-ml==1.6.0
 fastapi
-typing
+uvicorn
 

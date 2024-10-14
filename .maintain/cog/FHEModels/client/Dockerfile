@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.9
+FROM python:3.9-slim-buster
 
 # Set the working directory in the container
 WORKDIR /usr/src/app
@@ -17,8 +17,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the current directory contents into the container at /usr/src/app
 COPY . .
 
-# Make port 5001 available to the world outside this container
-EXPOSE 5001
+# Make port 8000 available to the world outside this container
+EXPOSE 8000
 
 # Define the command to run the application
-CMD ["python", "./client.py"]
+#CMD ["python", "./client.py"]
+CMD ["uvicorn", "client:app", "--host", "0.0.0.0", "--port", "8000"]
